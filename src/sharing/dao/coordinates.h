@@ -13,16 +13,17 @@ namespace airsharing {
 
 class Coordinates {
  public:
+  Coordinates(const std::int64_t &longitude, const std::int64_t &latitude) : longitude(longitude), latitude(latitude) {}
   Coordinates() {}
   ~Coordinates() {}
   auto ToJson() -> json;
 
   // 經度
-  double longitude = 0.0;
+  std::int64_t longitude = 0;
   // 緯度
-  double latitude = 0.0;
+  std::int64_t latitude = 0;
 
-};
+} DummyCoordinates(-1, -1);
 
 auto Coordinates::ToJson() -> json {
   json ret = {
@@ -33,7 +34,6 @@ auto Coordinates::ToJson() -> json {
   return ret;
 }
 
-static const Coordinates DummyCoordinates = Coordinates();
 
 }  // namespace airsharing
 }  // namespace airouting

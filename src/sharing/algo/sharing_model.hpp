@@ -11,6 +11,26 @@ namespace airouting {
 namespace airsharing {
 using namespace operations_research;
 
+
+struct Route {
+  Route(const Coordinates &coordinates_from, const Coordinates &coordinates_to) {
+    distance = std::abs(coordinates_from.longitude - coordinates_to.longitude) + std::abs(coordinates_from.latitude - coordinates_to.latitude);
+    time = distance;
+  }
+  Route(std::string type) {
+    if (type.compare("ZeroRoute") == 0) {
+      distance = 0;
+      time = time;
+    }
+  }
+
+  std::int64_t distance = maxOfSystem;
+  std::int64_t time = maxOfSystem;
+
+} ZeroRoute("ZeroRoute"), UnreachableRoute("UnreachableRoute");
+
+
+
 class SharingModel {
  public:
   ~SharingModel() {}
@@ -21,9 +41,11 @@ class SharingModel {
   auto vehicle_start_node_indexies() const -> const std::vector<RoutingIndexManager::NodeIndex>;
   auto vehicle_end_node_indexies() const -> const std::vector<RoutingIndexManager::NodeIndex>;
   auto strategy() const -> const Strategy { return this->parameter.strategy; }
+  auto FindRoute(const std::size_t &node_from_index, const std::size_t &node_to_index) const -> const Route;
   auto GetRouteDistance(const std::size_t &node_from_index, const std::size_t &node_to_index) const -> const std::int64_t;
   auto GetRouteTime(const std::size_t &node_from_index, const std::size_t &node_to_index) const -> const std::int64_t;
   auto node(const std::size_t &node_index) const -> const Node { return this->nodes.at(node_index); }
+  auto vehicle(const std::size_t &num_vehicle) const -> const Vehicle { return this->parameter.vehicles.at(num_vehicle); }
   const Parameter &parameter;
 
  private:
@@ -76,7 +98,7 @@ auto SharingModel::vehicle_start_node_indexies() const -> const std::vector<Rout
   }
 
   return indexies;
-};
+}
 
 auto SharingModel::vehicle_end_node_indexies() const -> const std::vector<RoutingIndexManager::NodeIndex> {
   std::vector<RoutingIndexManager::NodeIndex> indexies;
@@ -90,13 +112,63 @@ auto SharingModel::vehicle_end_node_indexies() const -> const std::vector<Routin
   }
 
   return indexies;
-};
+}
+
+auto SharingModel::FindRoute(const std::size_t &node_from_index, const std::size_t &node_to_index) const -> const Route {
+
+  const auto from_node = this->nodes.at(node_from_index);
+  const auto to_node = this->nodes.at(node_to_index);
+
+
+  if (from_node.nodetype == NodeType::ORDER_DIRECT) {
+    const auto from_coordinates = from_node.order.direct_location;
+
+    if (to_node.nodetype == NodeType::ORDER_DIRECT) {
+      const auto to_coordinates = to_node.order.direct_location;
+      return Route(from_coordinates, to_coordinates);
+    } else if (to_node.nodetype == NodeType::ORDER_DELIVERY) {
+      const auto to_coordinates = to_node.order.delivery_location;
+      return Route(from_coordinates, to_coordinates);
+    } else if (to_node.nodetype == NodeType::VEHICLE_START) {
+      return UnreachableRoute;
+    } else if (to_node.nodetype == NodeType::VEHICLE_END) {
+      return ZeroRoute;
+    }
+
+  } else if (from_node.nodetype == NodeType::ORDER_DELIVERY) {
+    const auto from_coordinates = from_node.order.delivery_location;
+
+    if (to_node.nodetype == NodeType::ORDER_DIRECT) {
+      const auto to_coordinates = to_node.order.direct_location;
+      return Route(from_coordinates, to_coordinates);
+    } else if (to_node.nodetype == NodeType::ORDER_DELIVERY) {
+      const auto to_coordinates = to_node.order.delivery_location;
+      return Route(from_coordinates, to_coordinates);
+    } else if (to_node.nodetype == NodeType::VEHICLE_START) {
+      return UnreachableRoute;
+    } else if (to_node.nodetype == NodeType::VEHICLE_END) {
+      return ZeroRoute;
+    }
+  } else if (from_node.nodetype == NodeType::VEHICLE_START) {
+
+    if (to_node.nodetype == NodeType::ORDER_DIRECT || to_node.nodetype == NodeType::ORDER_DELIVERY) {
+      return ZeroRoute;
+    } else {
+      return UnreachableRoute;
+    }
+
+  } else if (from_node.nodetype == NodeType::VEHICLE_END) {
+    return UnreachableRoute;
+  }
+
+  return UnreachableRoute;
+}
 
 auto SharingModel::GetRouteDistance(const std::size_t &node_from_index, const std::size_t &node_to_index) const -> const std::int64_t {
-  return 1;
+  return FindRoute(node_from_index, node_to_index).distance;
 }
 auto SharingModel::GetRouteTime(const std::size_t &node_from_index, const std::size_t &node_to_index) const -> const std::int64_t {
-  return 1;
+  return FindRoute(node_from_index, node_to_index).time;
 }
 
 }  // namespace airpublic

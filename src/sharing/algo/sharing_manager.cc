@@ -98,13 +98,10 @@ auto SharingManager::AddTransitTimeDimension() -> void {
 
 auto SharingManager::AddCostEvaluatorOfDistance() -> void {
   auto callback = [&] (int64_t from_index, int64_t to_index) -> int64_t {
-    // const auto from_node = this->routing_manager().IndexToNode(from_index).value();
-    // const auto to_node = this->routing_manager().IndexToNode(to_index).value();
+    const auto node_from_index = this->routing_managers.at(0).IndexToNode(from_index).value();
+    const auto node_to_index = this->routing_managers.at(0).IndexToNode(to_index).value();
 
-    // const auto route = this->vrp_model.FindRoute(from_node,
-    //                                             to_node);
-
-    return 1;
+    return this->sharing_model.GetRouteDistance(node_from_index, node_to_index);
   };
 
   auto callback_index = this->routing_model->RegisterTransitCallback(callback);
@@ -127,6 +124,41 @@ auto SharingManager::AddPriorityDisjunction() -> void {
   }
 }
 
+auto SharingManager::AddVehicleTimeWindow() -> void {
+  if (!this->routing_model->HasDimension(time_cost_dimension_name))
+    this->AddTransitTimeDimension();
+
+  auto dimension = this->routing_model->GetMutableDimension(time_cost_dimension_name);
+
+  for (std::size_t i = 0; i < this->sharing_model.vehicles_size(); ++i) {
+    const auto vehicle = this->sharing_model.vehicle(i);
+
+    auto start_index = this->routing_model->Start(i);
+    dimension->CumulVar(start_index)->SetRange(vehicle.on_work_time, vehicle.off_work_time);
+
+    auto end_index = this->routing_model->End(i);
+    dimension->CumulVar(end_index)->SetRange(vehicle.off_work_time, vehicle.off_work_time);
+  }
+}
+auto SharingManager::AddOrderTimeWindow() -> void {
+  if (!this->routing_model->HasDimension(time_cost_dimension_name))
+    this->AddTransitTimeDimension();
+
+  auto dimension = this->routing_model->GetMutableDimension(time_cost_dimension_name);
+
+  for (std::size_t i = 0; i < this->sharing_model.nodes_size(); ++i) {
+    const auto node = this->sharing_model.node(i);
+
+    if (node.nodetype != NodeType::ORDER_DIRECT || node.nodetype != NodeType::ORDER_DELIVERY)
+      continue;
+
+    const auto this_order = node.order;
+    auto index = this->routing_managers.at(0).NodeToIndex(RoutingIndexManager::NodeIndex(i));
+
+    dimension->CumulVar(index)->SetRange(this_order.start_time, this_order.end_time);
+  }
+}
+
 // auto SharingManager::AddSearchRecord() -> void {
 //   SearchRecord search_record;
 //   search_record.cost = this->routing_model->CostVar()->Min();
@@ -141,9 +173,9 @@ auto SharingManager::AddPriorityDisjunction() -> void {
 auto SharingManager::StartCalculate() -> const Solution {
 
 
-  DebugPrint << "time_limit" << this->sharing_model.strategy().time_limit << std::endl;
-  DebugPrint << "first_solution_strategy" << this->sharing_model.strategy().first_solution_strategy << std::endl;
-  DebugPrint << "metaheuristic" << this->sharing_model.strategy().metaheuristic << std::endl;
+  // DebugPrint << "time_limit" << this->sharing_model.strategy().time_limit << std::endl;
+  // DebugPrint << "first_solution_strategy" << this->sharing_model.strategy().first_solution_strategy << std::endl;
+  // DebugPrint << "metaheuristic" << this->sharing_model.strategy().metaheuristic << std::endl;
 
 
   // 設定 log
@@ -246,7 +278,12 @@ auto SharingManager::ConvertSolution(const operations_research::Assignment &assi
     }
   }
 
+  const auto *solver = this->routing_model->solver();
   solution.report.routing_status = StatusOfSearch(this->routing_model->status());
+  solution.report.wall_time = solver->wall_time();
+  solution.report.memory_usage = solver->MemoryUsage();
+  solution.report.branches = solver->branches();
+  solution.report.solutions = solver->solutions();
 
   DebugPrint << "ConvertSolution done" << std::endl;
 

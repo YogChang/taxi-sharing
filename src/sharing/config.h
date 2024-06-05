@@ -1,5 +1,5 @@
 
-
+#include <float.h>
 #include <cstdint>
 #include "nlohmann/json.hpp"
 

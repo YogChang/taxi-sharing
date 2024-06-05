@@ -17,9 +17,8 @@ std::string ReadFile(std::string read_path) {
   std::stringstream strStream;
   if (reader.is_open()) {
     strStream << reader.rdbuf();
-  } else {
-    std::cout << "reader.is_close" << std::endl;
   }
+
   reader.close();
   return strStream.str();
 }
@@ -28,7 +27,7 @@ int main() {
 
   
   airouting::airsharing::DebugPrint << "before - ReadFile " << std::endl;
-  std::string str = ReadFile("/mnt/test_data/test_input.json");
+  std::string str = ReadFile("/mnt/test_data/input/parameter.json");
 
   auto parameter = airouting::airsharing::SharingWrapper::FromJson(str);
 
@@ -40,10 +39,11 @@ int main() {
   manager.AddTransitTimeDimension();
   manager.AddCostEvaluatorOfDistance();
   manager.AddPriorityDisjunction();
-
+  manager.AddVehicleTimeWindow();
+  manager.AddOrderTimeWindow();
 
   auto solution = manager.StartCalculate();
-  std::cout << solution.ToJson().dump(4) << std::endl;
+  SaveFile("/mnt/test_data/output/solution.json", solution.ToJson().dump(4));
 
   return 0;
 }

@@ -50,12 +50,21 @@ struct ValidVehicle {
 
 struct Report {
   std::int64_t wall_time = -1;
+  std::int64_t memory_usage = -1;
+  std::int64_t branches = -1;
+  std::int64_t solutions = -1;
+  
   std::string version = "1.0.0";
   std::string routing_status = "UNKNOWN_STATUS";
+
+
   auto ToJson() -> json {
     json ret = {
       {"version", version},
       {"wall_time", wall_time},
+      {"memory_usage", memory_usage},
+      {"branches", branches},
+      {"solutions", solutions},
       {"routing_status", routing_status}
     };
 

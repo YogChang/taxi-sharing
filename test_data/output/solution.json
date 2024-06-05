@@ -1,0 +1,97 @@
+{
+    "droppeds": [
+        {
+            "arrival_distance": -1,
+            "arrival_time_early": -1,
+            "arrival_time_lately": -1,
+            "node": {
+                "nodetype": "ORDER_DIRECT",
+                "order": {
+                    "code": "2004",
+                    "delivery_location": {
+                        "latitude": 23754,
+                        "longitude": 121663
+                    },
+                    "direct_location": {
+                        "latitude": 23345,
+                        "longitude": 121654
+                    },
+                    "end_time": 123,
+                    "start_time": 27
+                }
+            }
+        },
+        {
+            "arrival_distance": -1,
+            "arrival_time_early": -1,
+            "arrival_time_lately": -1,
+            "node": {
+                "nodetype": "ORDER_DELIVERY",
+                "order": {
+                    "code": "2004",
+                    "delivery_location": {
+                        "latitude": 23754,
+                        "longitude": 121663
+                    },
+                    "direct_location": {
+                        "latitude": 23345,
+                        "longitude": 121654
+                    },
+                    "end_time": 123,
+                    "start_time": 27
+                }
+            }
+        },
+        {
+            "arrival_distance": -1,
+            "arrival_time_early": -1,
+            "arrival_time_lately": -1,
+            "node": {
+                "nodetype": "ORDER_DIRECT",
+                "order": {
+                    "code": "3556",
+                    "delivery_location": {
+                        "latitude": 23777,
+                        "longitude": 121666
+                    },
+                    "direct_location": {
+                        "latitude": 23656,
+                        "longitude": 121555
+                    },
+                    "end_time": 140,
+                    "start_time": 30
+                }
+            }
+        },
+        {
+            "arrival_distance": -1,
+            "arrival_time_early": -1,
+            "arrival_time_lately": -1,
+            "node": {
+                "nodetype": "ORDER_DELIVERY",
+                "order": {
+                    "code": "3556",
+                    "delivery_location": {
+                        "latitude": 23777,
+                        "longitude": 121666
+                    },
+                    "direct_location": {
+                        "latitude": 23656,
+                        "longitude": 121555
+                    },
+                    "end_time": 140,
+                    "start_time": 30
+                }
+            }
+        }
+    ],
+    "report": {
+        "branches": 140,
+        "memory_usage": 12534784,
+        "routing_status": "ROUTING_FAIL",
+        "solutions": 0,
+        "version": "1.0.0",
+        "wall_time": 5
+    },
+    "valid_vehicles": []
+}

@@ -2,12 +2,12 @@
     "orders": [
         {
             "direct_location": {
-                "latitude": 23.345,
-                "longitude": 121.654
+                "latitude": 23345,
+                "longitude": 121654
             },
             "delivery_location": {
-                "latitude": 23.754,
-                "longitude": 121.663
+                "latitude": 23754,
+                "longitude": 121663
             },
             "start_time": 27,
             "end_time": 123,
@@ -15,12 +15,12 @@
         },
         {
             "direct_location": {
-                "latitude": 23.656,
-                "longitude": 121.555
+                "latitude": 23656,
+                "longitude": 121555
             },
             "delivery_location": {
-                "latitude": 23.777,
-                "longitude": 121.666
+                "latitude": 23777,
+                "longitude": 121666
             },
             "start_time": 30,
             "end_time": 140,

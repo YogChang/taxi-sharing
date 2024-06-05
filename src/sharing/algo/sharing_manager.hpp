@@ -37,6 +37,8 @@ class SharingManager {
   auto AddTransitTimeDimension() -> void;
   auto AddCostEvaluatorOfDistance() -> void;
   auto AddPriorityDisjunction() -> void;
+  auto AddVehicleTimeWindow() -> void;
+  auto AddOrderTimeWindow() -> void;
 
  private:
   const SharingModel &sharing_model;
