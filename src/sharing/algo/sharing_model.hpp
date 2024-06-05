@@ -20,12 +20,15 @@ struct Route {
   Route(std::string type) {
     if (type.compare("ZeroRoute") == 0) {
       distance = 0;
-      time = time;
+      time = 0;
+    } else if (type.compare("UnreachableRoute") == 0) {
+      distance = maxOfSystem;
+      time = maxOfSystem;
     }
   }
 
-  std::int64_t distance = maxOfSystem;
-  std::int64_t time = maxOfSystem;
+  std::int64_t distance = -1;
+  std::int64_t time = -1;
 
 } ZeroRoute("ZeroRoute"), UnreachableRoute("UnreachableRoute");
 
@@ -77,7 +80,9 @@ auto SharingModel::Initialize() -> void {
     auto tmp_vehicle_start = Node(vehicle, counter, NodeType::VEHICLE_START);
     this->nodes.push_back(tmp_vehicle_start);
     counter++;
+  }
 
+  for (const auto &vehicle : this->parameter.vehicles) {
     auto tmp_vehicle_end = Node(vehicle, counter, NodeType::VEHICLE_END);
     this->nodes.push_back(tmp_vehicle_end);
     counter++;
@@ -119,46 +124,45 @@ auto SharingModel::FindRoute(const std::size_t &node_from_index, const std::size
   const auto from_node = this->nodes.at(node_from_index);
   const auto to_node = this->nodes.at(node_to_index);
 
-
-  if (from_node.nodetype == NodeType::ORDER_DIRECT) {
-    const auto from_coordinates = from_node.order.direct_location;
-
-    if (to_node.nodetype == NodeType::ORDER_DIRECT) {
-      const auto to_coordinates = to_node.order.direct_location;
-      return Route(from_coordinates, to_coordinates);
-    } else if (to_node.nodetype == NodeType::ORDER_DELIVERY) {
-      const auto to_coordinates = to_node.order.delivery_location;
-      return Route(from_coordinates, to_coordinates);
-    } else if (to_node.nodetype == NodeType::VEHICLE_START) {
-      return UnreachableRoute;
-    } else if (to_node.nodetype == NodeType::VEHICLE_END) {
-      return ZeroRoute;
-    }
-
-  } else if (from_node.nodetype == NodeType::ORDER_DELIVERY) {
-    const auto from_coordinates = from_node.order.delivery_location;
-
-    if (to_node.nodetype == NodeType::ORDER_DIRECT) {
-      const auto to_coordinates = to_node.order.direct_location;
-      return Route(from_coordinates, to_coordinates);
-    } else if (to_node.nodetype == NodeType::ORDER_DELIVERY) {
-      const auto to_coordinates = to_node.order.delivery_location;
-      return Route(from_coordinates, to_coordinates);
-    } else if (to_node.nodetype == NodeType::VEHICLE_START) {
-      return UnreachableRoute;
-    } else if (to_node.nodetype == NodeType::VEHICLE_END) {
-      return ZeroRoute;
-    }
-  } else if (from_node.nodetype == NodeType::VEHICLE_START) {
-
-    if (to_node.nodetype == NodeType::ORDER_DIRECT || to_node.nodetype == NodeType::ORDER_DELIVERY) {
-      return ZeroRoute;
-    } else {
-      return UnreachableRoute;
-    }
-
-  } else if (from_node.nodetype == NodeType::VEHICLE_END) {
+  if (from_node.nodetype == NodeType::VEHICLE_END) {
     return UnreachableRoute;
+  }
+
+  if (to_node.nodetype == NodeType::VEHICLE_START) {
+      return UnreachableRoute;
+  }
+
+
+  if (from_node.nodetype == NodeType::ORDER_DIRECT && to_node.nodetype == NodeType::ORDER_DIRECT) {
+    const auto from_coordinates = from_node.order.direct_location;
+    const auto to_coordinates = to_node.order.direct_location;
+    return Route(from_coordinates, to_coordinates);
+  }
+
+  if (from_node.nodetype == NodeType::ORDER_DIRECT && to_node.nodetype == NodeType::ORDER_DELIVERY) {
+    const auto from_coordinates = from_node.order.direct_location;
+    const auto to_coordinates = to_node.order.delivery_location;
+    return Route(from_coordinates, to_coordinates);
+  }
+
+  if (from_node.nodetype == NodeType::ORDER_DELIVERY && to_node.nodetype == NodeType::ORDER_DIRECT) {
+    const auto from_coordinates = from_node.order.delivery_location;
+    const auto to_coordinates = to_node.order.direct_location;
+    return Route(from_coordinates, to_coordinates);
+  }
+
+  if (from_node.nodetype == NodeType::ORDER_DELIVERY && to_node.nodetype == NodeType::ORDER_DELIVERY) {
+    const auto from_coordinates = from_node.order.delivery_location;
+    const auto to_coordinates = to_node.order.delivery_location;
+    return Route(from_coordinates, to_coordinates);
+  }
+
+  if (from_node.nodetype == NodeType::VEHICLE_START) {
+    return ZeroRoute;
+  }
+
+  if (to_node.nodetype == NodeType::VEHICLE_END) {
+    return ZeroRoute;
   }
 
   return UnreachableRoute;

@@ -2,12 +2,12 @@
     "orders": [
         {
             "direct_location": {
-                "latitude": 23345,
-                "longitude": 121654
+                "latitude": 146,
+                "longitude": 36
             },
             "delivery_location": {
-                "latitude": 23754,
-                "longitude": 121663
+                "latitude": 175,
+                "longitude": 40
             },
             "start_time": 27,
             "end_time": 123,
@@ -15,12 +15,12 @@
         },
         {
             "direct_location": {
-                "latitude": 23656,
-                "longitude": 121555
+                "latitude": 123,
+                "longitude": 23
             },
             "delivery_location": {
-                "latitude": 23777,
-                "longitude": 121666
+                "latitude": 130,
+                "longitude": 27
             },
             "start_time": 30,
             "end_time": 140,
@@ -30,18 +30,18 @@
     "strategy": {
         "first_solution_strategy": 8,
         "metaheuristic": 3,
-        "time_limit": 30
+        "time_limit": 10
     },
     "vehicles": [
         {
             "code": "9189",
-            "off_work_time": 172,
-            "on_work_time": 141
+            "off_work_time": 500,
+            "on_work_time": 0
         },
         {
             "code": "9100",
-            "off_work_time": 155,
-            "on_work_time": 123
+            "off_work_time": 500,
+            "on_work_time": 0
         }
     ]
 }

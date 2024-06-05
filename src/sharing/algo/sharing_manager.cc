@@ -149,7 +149,7 @@ auto SharingManager::AddOrderTimeWindow() -> void {
   for (std::size_t i = 0; i < this->sharing_model.nodes_size(); ++i) {
     const auto node = this->sharing_model.node(i);
 
-    if (node.nodetype != NodeType::ORDER_DIRECT || node.nodetype != NodeType::ORDER_DELIVERY)
+    if (node.nodetype != NodeType::ORDER_DIRECT && node.nodetype != NodeType::ORDER_DELIVERY)
       continue;
 
     const auto this_order = node.order;
