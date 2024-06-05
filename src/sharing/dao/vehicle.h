@@ -24,9 +24,9 @@ class Vehicle {
   // 編號
   std::string code = "";
   // 時窗開啟時間
-  std::int64_t on_work_time = airMinDatetime;
+  std::int64_t on_work_time = minDateTime;
   // 時窗結束時間
-  std::int64_t off_work_time = airMaxDatetime;
+  std::int64_t off_work_time = maxDateTime;
 
 };
 

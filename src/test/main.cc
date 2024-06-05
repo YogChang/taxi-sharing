@@ -29,17 +29,14 @@ int main() {
   
   airouting::airsharing::DebugPrint << "before - ReadFile " << std::endl;
   std::string str = ReadFile("/mnt/test_data/test_input.json");
-  std::cout << str << std::endl;
 
   auto parameter = airouting::airsharing::SharingWrapper::FromJson(str);
-  std::cout << parameter.ToJson().dump(4) << std::endl;
 
   auto model = airouting::airsharing::SharingModel(parameter);
 
   auto manager = airouting::airsharing::SharingManager(model);
 
   auto solution = manager.StartCalculate();
-  std::cout << solution.ToJson().dump(4) << std::endl;
 
   return 0;
 }

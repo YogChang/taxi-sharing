@@ -53,12 +53,12 @@ DebugConfig& operator<<(DebugConfig& config, std::ostream& (*manipulator)(std::o
 
 
 // 0L = 01/01/1970 @ 12:00am (UTC)
-static const std::int64_t airMinDatetime = 0L;
+static const std::int64_t minDateTime = 0L;
 
 // 253402300799L = 12/31/9999 @ 11:59pm (UTC)
-static const std::int64_t airMaxDatetime = 253402300799L;
+static const std::int64_t maxDateTime = 253402300799L;
 
-
+static const std::int64_t maxOfSystem = INT64_MAX;
 
 
 }  // namespace airpublic

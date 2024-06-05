@@ -20,6 +20,9 @@ class SharingModel {
   auto vehicles_size() const -> const std::size_t { return this->parameter.vehicles.size(); }
   auto vehicle_start_node_indexies() const -> const std::vector<RoutingIndexManager::NodeIndex>;
   auto vehicle_end_node_indexies() const -> const std::vector<RoutingIndexManager::NodeIndex>;
+  auto strategy() const -> const Strategy { return this->parameter.strategy; }
+  auto GetRouteDistance(const std::size_t &node_from_index, const std::size_t &node_to_index) const -> const std::int64_t;
+  auto GetRouteTime(const std::size_t &node_from_index, const std::size_t &node_to_index) const -> const std::int64_t;
 
  private:
  
@@ -87,6 +90,13 @@ auto SharingModel::vehicle_end_node_indexies() const -> const std::vector<Routin
 
   return indexies;
 };
+
+auto SharingModel::GetRouteDistance(const std::size_t &node_from_index, const std::size_t &node_to_index) const -> const std::int64_t {
+  return 1;
+}
+auto SharingModel::GetRouteTime(const std::size_t &node_from_index, const std::size_t &node_to_index) const -> const std::int64_t {
+  return 1;
+}
 
 }  // namespace airpublic
 }  // namespace airsharing

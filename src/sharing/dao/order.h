@@ -28,9 +28,9 @@ class Order {
   // 抵達地點
   Coordinates delivery_location = DummyCoordinates;
   // 訂單開始時間
-  std::int64_t start_time = airMinDatetime;
+  std::int64_t start_time = minDateTime;
   // 訂單結束時間
-  std::int64_t end_time = airMaxDatetime;
+  std::int64_t end_time = maxDateTime;
 
 
 };

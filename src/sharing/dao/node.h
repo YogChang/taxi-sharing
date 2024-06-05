@@ -12,7 +12,6 @@
 namespace airouting {
 namespace airsharing {
 
-// enum class NodeType : int { VEHICLE_DUMMY_START = 1, VEHICLE_DUMMY_END = 2, VEHICLE_START = 3, VEHICLE_END = 4, ORDER_DIRECT = 5, ORDER_DELIVERY = 6, UNKNOW = -1 };
 enum class NodeType : int { VEHICLE_START = 1, VEHICLE_END = 2, ORDER_DIRECT = 3, ORDER_DELIVERY = 4, UNKNOW = -1 };
 
 class Node {
