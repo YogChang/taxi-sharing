@@ -15,14 +15,7 @@ class Coordinates {
  public:
   Coordinates() {}
   ~Coordinates() {}
-  json ToJson() {
-    json ret = {
-      {"longitude", longitude},
-      {"latitude", latitude}
-    };
-
-    return ret;
-  }
+  auto ToJson() -> json;
 
   // 經度
   double longitude = 0.0;
@@ -30,6 +23,15 @@ class Coordinates {
   double latitude = 0.0;
 
 };
+
+auto Coordinates::ToJson() -> json {
+  json ret = {
+    {"longitude", longitude},
+    {"latitude", latitude}
+  };
+
+  return ret;
+}
 
 static const Coordinates DummyCoordinates = Coordinates();
 

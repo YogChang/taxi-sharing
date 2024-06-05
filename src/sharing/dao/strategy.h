@@ -17,23 +17,23 @@ class Strategy {
  public:
   Strategy() {}
   ~Strategy() {}
+  auto ToJson() -> json;
 
-  json ToJson() {
-    json ret = {
-      {"first_solution_strategy", first_solution_strategy},
-      {"metaheuristic", metaheuristic},
-      {"time_limit", time_limit}
-    };
-
-    return ret;
-  }
 
   std::int64_t first_solution_strategy = 8;
   std::int64_t metaheuristic = 3;
   std::int64_t time_limit = 60;
 };
 
+auto Strategy::ToJson() -> json {
+  json ret = {
+    {"first_solution_strategy", first_solution_strategy},
+    {"metaheuristic", metaheuristic},
+    {"time_limit", time_limit}
+  };
 
+  return ret;
+}
 
 }  // namespace airpublic
 }  // namespace airsharing

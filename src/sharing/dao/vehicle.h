@@ -18,16 +18,8 @@ class Vehicle {
  public:
   Vehicle() {}
   ~Vehicle() {}
+  auto ToJson() -> json;
 
-  json ToJson() {
-    json ret = {
-      {"code", code},
-      {"on_work_time", on_work_time},
-      {"off_work_time", off_work_time}
-    };
-
-    return ret;
-  }
 
   // 編號
   std::string code = "";
@@ -37,6 +29,16 @@ class Vehicle {
   std::int64_t off_work_time = airMaxDatetime;
 
 };
+
+auto Vehicle::ToJson() -> json {
+  json ret = {
+    {"code", code},
+    {"on_work_time", on_work_time},
+    {"off_work_time", off_work_time}
+  };
+
+  return ret;
+}
 
 static const Vehicle DummyVehicle = Vehicle();
 

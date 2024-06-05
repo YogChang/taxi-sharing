@@ -18,17 +18,7 @@ class Order {
  public:
   Order() {}
   ~Order() {}
-  json ToJson() {
-    json ret = {
-      {"code", code},
-      {"start_time", start_time},
-      {"end_time", end_time},
-      {"direct_location", direct_location.ToJson()},
-      {"delivery_location", delivery_location.ToJson()},
-    };
-
-    return ret;
-  }
+  auto ToJson() -> json;
 
   // 編號
   std::string code = "";
@@ -44,6 +34,18 @@ class Order {
 
 
 };
+
+auto Order::ToJson() -> json {
+  json ret = {
+    {"code", code},
+    {"start_time", start_time},
+    {"end_time", end_time},
+    {"direct_location", direct_location.ToJson()},
+    {"delivery_location", delivery_location.ToJson()},
+  };
+
+  return ret;
+}
 
 static const Order DummyOrder = Order();
 

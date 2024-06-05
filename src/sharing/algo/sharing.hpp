@@ -3,7 +3,7 @@
 #include <sstream>
 #include <vector>
 
-#include "sharing_model.h"
+#include "sharing_model.hpp"
 
 #include "ortools/constraint_solver/routing.h"
 #include "ortools/constraint_solver/routing_enums.pb.h"
