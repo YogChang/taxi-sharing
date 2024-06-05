@@ -3,7 +3,7 @@
 #include <fstream>
 #include <string>
 
-#include "src/sharing/algo/sharing.hpp"
+#include "src/sharing/algo/sharing_manager.hpp"
 
 void SaveFile(std::string save_path, std::string file_str) {
   std::ofstream writer(save_path);
@@ -34,7 +34,12 @@ int main() {
   auto parameter = airouting::airsharing::SharingWrapper::FromJson(str);
   std::cout << parameter.ToJson().dump(4) << std::endl;
 
-  // operations_research::VrpGlobalSpan();
+  auto model = airouting::airsharing::SharingModel(parameter);
+
+  auto manager = airouting::airsharing::SharingManager(model);
+
+  auto solution = manager.StartCalculate();
+  std::cout << solution.ToJson().dump(4) << std::endl;
 
   return 0;
 }

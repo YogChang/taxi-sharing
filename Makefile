@@ -21,7 +21,7 @@ INTERFACE_CACHE = src/sharing/algo
 DATA_CACHE = data
 
 
-PROJECT_NAME = sharing
+PROJECT_NAME = sharing_manager
 
 
 # @echo check, check_all:	Check OR-Tools for all available languages.

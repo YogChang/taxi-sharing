@@ -3,8 +3,8 @@
 #include "src/sharing/dao/parameter.h"
 
 
-#ifndef SRC_SHARING_WRAPPER_SHARINGWRAPPER_H_
-#define SRC_SHARING_WRAPPER_SHARINGWRAPPER_H_
+#ifndef SRC_SHARING_WRAPPER_SHARINGWRAPPER_HPP_
+#define SRC_SHARING_WRAPPER_SHARINGWRAPPER_HPP_
 
 namespace airouting {
 namespace airsharing {
@@ -116,4 +116,4 @@ const Parameter SharingWrapper::FromJson(const nlohmann::json &json_obj) {
 }  // namespace airpublic
 }  // namespace airsharing
 
-#endif  // SRC_SHARING_WRAPPER_SHARINGWRAPPER_H_
+#endif  // SRC_SHARING_WRAPPER_SHARINGWRAPPER_HPP_
