@@ -33,6 +33,11 @@ class SharingManager {
   SharingManager(const SharingModel &sharing_model);
   auto StartCalculate() -> const Solution;
 
+  auto AddTransitDistanceDimension() -> void;
+  auto AddTransitTimeDimension() -> void;
+  auto AddCostEvaluatorOfDistance() -> void;
+  auto AddPriorityDisjunction() -> void;
+
  private:
   const SharingModel &sharing_model;
   std::vector<RoutingIndexManager> routing_managers;
@@ -41,10 +46,7 @@ class SharingManager {
   std::vector<SearchRecord> search_records;
   SearchRecord minimum_cost_record = {INT64_MAX, INT64_MAX};
 
-  auto AddTransitDistanceDimension() -> void;
-  auto AddTransitTimeDimension() -> void;
-
-  auto AddSearchRecord() -> void;
+  // auto AddSearchRecord() -> void;
   auto ConvertSolution(const operations_research::Assignment &assignment) -> const Solution;
 };
 

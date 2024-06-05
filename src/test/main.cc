@@ -36,7 +36,14 @@ int main() {
 
   auto manager = airouting::airsharing::SharingManager(model);
 
+  manager.AddTransitDistanceDimension();
+  manager.AddTransitTimeDimension();
+  manager.AddCostEvaluatorOfDistance();
+  manager.AddPriorityDisjunction();
+
+
   auto solution = manager.StartCalculate();
+  std::cout << solution.ToJson().dump(4) << std::endl;
 
   return 0;
 }

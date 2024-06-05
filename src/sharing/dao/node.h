@@ -21,6 +21,7 @@ class Node {
   Node(const Vehicle& vehicle, const std::int64_t &system_index, const NodeType &nodetype);
 
   ~Node() {}
+  auto ToJson() -> json;
 
   NodeType nodetype = NodeType::UNKNOW;
   Order order = DummyOrder;
@@ -37,6 +38,28 @@ Node::Node(const Vehicle& vehicle, const std::int64_t &system_index, const NodeT
   this->vehicle = vehicle;
   this->system_index = system_index;
   this->nodetype = nodetype;
+}
+
+auto Node::ToJson() -> json {
+  json ret;
+
+  if (nodetype == NodeType::VEHICLE_START) {
+    ret["nodetype"] = "VEHICLE_START";
+    ret["vehicle"] = vehicle.ToJson();
+  } else if (nodetype == NodeType::VEHICLE_END) {
+    ret["nodetype"] = "VEHICLE_END";
+    ret["vehicle"] = vehicle.ToJson();
+  } else if (nodetype == NodeType::ORDER_DIRECT) {
+    ret["nodetype"] = "ORDER_DIRECT";
+    ret["order"] = order.ToJson();
+  } else if (nodetype == NodeType::ORDER_DELIVERY) {
+    ret["nodetype"] = "ORDER_DELIVERY";
+    ret["order"] = order.ToJson();
+  } else {
+    ret["nodetype"] = "UNKNOW";
+  }
+
+  return ret;
 }
 
 }  // namespace airsharing

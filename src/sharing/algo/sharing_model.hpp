@@ -23,10 +23,11 @@ class SharingModel {
   auto strategy() const -> const Strategy { return this->parameter.strategy; }
   auto GetRouteDistance(const std::size_t &node_from_index, const std::size_t &node_to_index) const -> const std::int64_t;
   auto GetRouteTime(const std::size_t &node_from_index, const std::size_t &node_to_index) const -> const std::int64_t;
+  auto node(const std::size_t &node_index) const -> const Node { return this->nodes.at(node_index); }
+  const Parameter &parameter;
 
  private:
- 
-  const Parameter &parameter;
+
   std::vector<Node> nodes;
   auto Initialize() -> void;
 };

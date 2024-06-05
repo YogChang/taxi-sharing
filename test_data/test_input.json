@@ -30,7 +30,7 @@
     "strategy": {
         "first_solution_strategy": 8,
         "metaheuristic": 3,
-        "time_limit": 100
+        "time_limit": 30
     },
     "vehicles": [
         {

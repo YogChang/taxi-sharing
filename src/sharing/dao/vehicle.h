@@ -18,7 +18,7 @@ class Vehicle {
  public:
   Vehicle() {}
   ~Vehicle() {}
-  auto ToJson() -> json;
+  auto ToJson() const -> json;
 
 
   // 編號
@@ -30,7 +30,7 @@ class Vehicle {
 
 };
 
-auto Vehicle::ToJson() -> json {
+auto Vehicle::ToJson() const -> json {
   json ret = {
     {"code", code},
     {"on_work_time", on_work_time},
