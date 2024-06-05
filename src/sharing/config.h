@@ -1,7 +1,7 @@
 
 
 #include <cstdint>
-#include "../../dependencies/nlohmann/json.hpp"
+#include "nlohmann/json.hpp"
 
 #ifndef AIROUTING_AIRSHARING_CONFIG_H_
 #define AIROUTING_AIRSHARING_CONFIG_H_

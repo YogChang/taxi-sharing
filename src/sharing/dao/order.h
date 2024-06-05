@@ -18,7 +18,17 @@ class Order {
  public:
   Order() {}
   ~Order() {}
-  json ToJson();
+  json ToJson() {
+    json ret = {
+      {"code", code},
+      {"start_time", start_time},
+      {"end_time", end_time},
+      {"direct_location", direct_location.ToJson()},
+      {"delivery_location", delivery_location.ToJson()},
+    };
+
+    return ret;
+  }
 
   // 編號
   std::string code = "";

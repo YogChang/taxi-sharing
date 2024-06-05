@@ -28,11 +28,11 @@ int main() {
 
   
   airouting::airsharing::DebugPrint << "before - ReadFile " << std::endl;
-  std::string str = ReadFile("./test_data/test_input.json");
+  std::string str = ReadFile("/mnt/test_data/test_input.json");
   std::cout << str << std::endl;
 
   auto parameter = airouting::airsharing::SharingWrapper::FromJson(str);
-  std::cout << parameter.ToJson().dump() << std::endl;
+  std::cout << parameter.ToJson().dump(4) << std::endl;
 
   // operations_research::VrpGlobalSpan();
 

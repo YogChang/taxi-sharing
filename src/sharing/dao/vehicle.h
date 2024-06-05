@@ -20,7 +20,13 @@ class Vehicle {
   ~Vehicle() {}
 
   json ToJson() {
+    json ret = {
+      {"code", code},
+      {"on_work_time", on_work_time},
+      {"off_work_time", off_work_time}
+    };
 
+    return ret;
   }
 
   // 編號

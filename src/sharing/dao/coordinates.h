@@ -15,7 +15,14 @@ class Coordinates {
  public:
   Coordinates() {}
   ~Coordinates() {}
-  json ToJson();
+  json ToJson() {
+    json ret = {
+      {"longitude", longitude},
+      {"latitude", latitude}
+    };
+
+    return ret;
+  }
 
   // 經度
   double longitude = 0.0;
