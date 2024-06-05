@@ -1,15 +1,15 @@
 
-#include "../dao/vehicle.h"
-#include "../dao/order.h"
-#include "../dao/strategy.h"
 
 
 
+#include "src/sharing/dao/vehicle.h"
+#include "src/sharing/dao/order.h"
+#include "src/sharing/dao/strategy.h"
 
 #include <string>
 #include <vector>
 
-#include "../config.h"
+
 
 
 #ifndef SRC_SHARING_WRAPPER_PARAMETER_H_

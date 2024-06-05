@@ -3,7 +3,7 @@
 #include <string>
 #include <vector>
 
-#include "../config.h"
+#include "src/sharing/config.h"
 
 
 #ifndef SRC_SHARING_DAO_VEHICLE_H_

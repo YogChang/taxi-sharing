@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-#include "../config.h"
+#include "src/sharing/config.h"
 #include "coordinates.h"
 
 
