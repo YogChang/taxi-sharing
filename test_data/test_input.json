@@ -1,0 +1,29 @@
+{
+    "orders": [
+        {
+            "direct_location": [
+                121.222,
+                23.555
+            ],
+            "delivery_location": [
+                121.222,
+                23.555
+            ],
+            "start_time": 27,
+            "end_time": 123,
+            "code": "9189"
+        }
+    ],
+    "strategy": {
+        "first_solution_strategy": 8,
+        "metaheuristic": 3,
+        "time_limit": 100
+    },
+    "vehicles": [
+        {
+            "code": "9189",
+            "off_work_time": 172,
+            "on_work_time": 141
+        }
+    ]
+}
