@@ -27,6 +27,7 @@ class Vehicle {
   std::int64_t on_work_time = minDateTime;
   // 時窗結束時間
   std::int64_t off_work_time = maxDateTime;
+  std::int64_t capacity = -1;
 
 };
 
@@ -34,7 +35,8 @@ auto Vehicle::ToJson() const -> json {
   json ret = {
     {"code", code},
     {"on_work_time", on_work_time},
-    {"off_work_time", off_work_time}
+    {"off_work_time", off_work_time},
+    {"capacity", capacity}
   };
 
   return ret;

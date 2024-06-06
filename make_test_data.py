@@ -13,11 +13,11 @@ def SaveJson(file_path,data):
        json.dump(data, json_file,ensure_ascii=False,indent=1)
 
 
-
 def vehicles():
-    vehicles_size = 5
+    vehicles_size = 6
     on_work_time_range = [300, 480]
     off_work_time_range = [1020, 1320]
+    capacity_range = [4, 8]
 
     ret = []
     for _ in range(vehicles_size):
@@ -25,6 +25,7 @@ def vehicles():
             "code": 'V-{:03}'.format(_),
             "on_work_time": random.randint(on_work_time_range[0], on_work_time_range[1]),
             "off_work_time": random.randint(off_work_time_range[0], off_work_time_range[1]),
+            "capacity":  random.randint(capacity_range[0], capacity_range[1])
         })
     
     return ret
@@ -83,6 +84,7 @@ def main():
     }
 
     SaveJson('./test_data/input/parameter.json',ret)
+    print("make test data done")
 
 
 

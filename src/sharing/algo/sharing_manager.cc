@@ -53,6 +53,8 @@ const std::string StatusOfSearch(const operations_research::RoutingModel::Status
     return std::string{"ROUTING_PARTIAL_SUCCESS_LOCAL_OPTIMUM_NOT_REACHED"};
   case operations_research::RoutingModel::Status::ROUTING_INFEASIBLE:
     return std::string{"ROUTING_INFEASIBLE"};
+  case operations_research::RoutingModel::Status::ROUTING_OPTIMAL:
+    return std::string{"ROUTING_OPTIMAL"};
   }
 
   return std::string{"UNKNOWN_STATUS"};
@@ -312,6 +314,7 @@ auto SharingManager::ConvertSolution(const operations_research::Assignment &assi
       auto vehicle = this->sharing_model.parameter.vehicles.at(v_num);
 
       auto valid_vehicle = ValidVehicle(vehicle);
+      std::int64_t passengers_counter = 0;
       //  valid vehicle
       if (this->routing_model->IsVehicleUsed(assignment, v_num)) {
         solution.report.used_vehicles_num++;
@@ -326,13 +329,20 @@ auto SharingManager::ConvertSolution(const operations_research::Assignment &assi
           auto time_var = time_dimension.CumulVar(index);
           destination.arrival_time_early = assignment.Min(time_var);
           destination.arrival_time_lately = assignment.Max(time_var);
+          if (node.nodetype == NodeType::ORDER_DIRECT) {
+            passengers_counter++;
+            destination.passengers_num = passengers_counter;
+          } else if (node.nodetype == NodeType::ORDER_DELIVERY) {
+            passengers_counter--;
+            destination.passengers_num = passengers_counter;
+          }
           valid_vehicle.destinations.push_back(destination);
 
 
           const int64_t previous_index = index;
           index = assignment.Value(this->routing_model->NextVar(index));
           route_distance += this->routing_model->GetArcCostForVehicle(previous_index, index,
-                                                        int64_t{v_num});
+                                                        int64_t(v_num));
         }
 
         auto node = this->sharing_model.node(index);
@@ -341,6 +351,13 @@ auto SharingManager::ConvertSolution(const operations_research::Assignment &assi
         auto time_var = time_dimension.CumulVar(index);
         destination.arrival_time_early = assignment.Min(time_var);
         destination.arrival_time_lately = assignment.Max(time_var);
+        if (node.nodetype == NodeType::ORDER_DIRECT) {
+          passengers_counter++;
+          destination.passengers_num = passengers_counter;
+        } else if (node.nodetype == NodeType::ORDER_DELIVERY) {
+          passengers_counter--;
+          destination.passengers_num = passengers_counter;
+        }
         valid_vehicle.destinations.push_back(destination);
 
       }

@@ -22,6 +22,7 @@ struct Destination {
   std::int64_t arrival_time_early = -1;
   std::int64_t arrival_time_lately = -1;
   std::int64_t arrival_distance = -1;
+  std::int64_t passengers_num = -1;
 
   Destination(const Node &node) : node(node) {}
   auto ToJson() -> json {
@@ -30,6 +31,7 @@ struct Destination {
       {"arrival_time_early", arrival_time_early},
       {"arrival_time_lately", arrival_time_lately},
       {"arrival_distance", arrival_distance},
+      {"passengers_num", passengers_num}
     };
 
     return ret;
@@ -140,6 +142,9 @@ auto Solution::ToGeoJson() -> json {
         temp_node.AddProperty("預定上車時間", to_time_str(node.order.start_time));
         temp_node.AddProperty("抵達時間", to_time_str(d.arrival_time_early) + " ~ "+ to_time_str(d.arrival_time_lately));
         temp_node.AddProperty("司機累計里程", std::to_string(d.arrival_distance));
+        temp_node.AddProperty("乘客數 / 最大載客", std::to_string(d.passengers_num) + " / " + std::to_string(v.vehicle.capacity));
+        if (d.passengers_num > v.vehicle.capacity)
+          DebugPrint << "error!! " << v.vehicle.code << "-" << node.order.code << " passengers_num > vehicle.capacity" << std::endl;
         tmp_v.AddNode(temp_node);
 
 
@@ -150,6 +155,7 @@ auto Solution::ToGeoJson() -> json {
         temp_node.AddProperty("預定最晚下車時間", to_time_str(node.order.end_time));
         temp_node.AddProperty("抵達時間", to_time_str(d.arrival_time_early) + " ~ "+ to_time_str(d.arrival_time_lately));
         temp_node.AddProperty("司機累計里程", std::to_string(d.arrival_distance));
+        temp_node.AddProperty("乘客數 / 最大載客", std::to_string(d.passengers_num) + " / " + std::to_string(v.vehicle.capacity));
         tmp_v.AddNode(temp_node);
       } else {
 

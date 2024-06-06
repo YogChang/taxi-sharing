@@ -51,6 +51,8 @@ const Parameter SharingWrapper::FromJson(const nlohmann::json &json_obj) {
       vehicle.on_work_time = json_obj.at("on_work_time").get<std::int64_t>();
     if (json_obj.contains("off_work_time"))
       vehicle.off_work_time = json_obj.at("off_work_time").get<std::int64_t>();
+    if (json_obj.contains("capacity"))
+      vehicle.capacity = json_obj.at("capacity").get<std::int64_t>();
 
     return vehicle;
   };
