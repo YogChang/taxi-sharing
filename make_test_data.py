@@ -17,7 +17,7 @@ def vehicles():
     vehicles_size = 6
     on_work_time_range = [300, 480]
     off_work_time_range = [1020, 1320]
-    capacity_range = [4, 8]
+    capacity_range = [3, 6]
 
     ret = []
     for _ in range(vehicles_size):

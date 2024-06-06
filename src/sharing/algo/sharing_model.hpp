@@ -53,6 +53,8 @@ class SharingModel {
   auto GetRouteTime(const std::size_t &node_from_index, const std::size_t &node_to_index) const -> const std::int64_t;
   auto node(const std::size_t &node_index) const -> const Node { return this->nodes.at(node_index); }
   auto vehicle(const std::size_t &num_vehicle) const -> const Vehicle { return this->parameter.vehicles.at(num_vehicle); }
+  auto demand(const std::size_t &node_index) const -> const std::int64_t;
+  auto vehicle_capacities() const -> const std::vector<std::int64_t>;
   const Parameter &parameter;
 
  private:
@@ -121,6 +123,31 @@ auto SharingModel::vehicle_end_node_indexies() const -> const std::vector<Routin
   }
 
   return indexies;
+}
+
+auto SharingModel::demand(const std::size_t &node_index) const -> const std::int64_t {
+  const auto node = this->nodes.at(node_index);
+
+  if (node.nodetype == NodeType::ORDER_DIRECT)
+    return std::int64_t{1};
+
+  if (node.nodetype == NodeType::ORDER_DELIVERY)
+    return std::int64_t{-1};
+
+  return std::int64_t{0};
+}
+
+auto SharingModel::vehicle_capacities() const -> const std::vector<std::int64_t> {
+  std::vector<std::int64_t> capacities;
+
+  for (std::size_t i = 0; i < this->parameter.vehicles.size(); ++i)
+  {
+    auto vehicle = this->parameter.vehicles.at(i);
+
+    capacities.push_back(vehicle.capacity);
+  }
+
+  return capacities;
 }
 
 auto SharingModel::FindRoute(const std::size_t &node_from_index, const std::size_t &node_to_index) const -> const Route {
