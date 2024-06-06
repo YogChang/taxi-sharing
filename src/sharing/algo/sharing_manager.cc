@@ -28,11 +28,11 @@ auto Dispatch(const std::string &str) -> const std::string {
 
   auto solution = manager.StartCalculate();
 
-  // auto ret = json();
-  // ret["geo_json"] = solution.ToGeoJson();
-  // ret["solution"] = solution.ToJson();
+  auto ret = json();
+  ret["geo_json"] = solution.ToGeoJson();
+  ret["solution"] = solution.ToJson();
 
-  return solution.ToGeoJson().dump();
+  return ret.dump();
 }
 
 
@@ -175,13 +175,18 @@ auto SharingManager::AddOrderTimeWindow() -> void {
   for (std::size_t i = 0; i < this->sharing_model.nodes_size(); ++i) {
     const auto node = this->sharing_model.node(i);
 
-    if (node.nodetype != NodeType::ORDER_DIRECT && node.nodetype != NodeType::ORDER_DELIVERY)
-      continue;
+    if (node.nodetype == NodeType::ORDER_DIRECT) {
+      const auto this_order = node.order;
+      auto index = this->routing_managers.at(0).NodeToIndex(RoutingIndexManager::NodeIndex(i));
 
-    const auto this_order = node.order;
-    auto index = this->routing_managers.at(0).NodeToIndex(RoutingIndexManager::NodeIndex(i));
+      dimension->CumulVar(index)->SetRange(this_order.start_time -1 , this_order.start_time + 3);
+    } else if (node.nodetype == NodeType::ORDER_DELIVERY) {
+      const auto this_order = node.order;
+      auto index = this->routing_managers.at(0).NodeToIndex(RoutingIndexManager::NodeIndex(i));
 
-    dimension->CumulVar(index)->SetRange(this_order.start_time, this_order.end_time);
+      dimension->CumulVar(index)->SetRange(this_order.start_time, this_order.end_time);
+    }
+
   }
 }
 
