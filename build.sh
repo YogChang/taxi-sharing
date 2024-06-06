@@ -1,13 +1,16 @@
-
-# 清理
-# docker run --rm -it -v .:/mnt/ ortools/alpine/dev /bin/sh -c "rm -rf /mnt/bin /mnt/lib"
+# build dir
+if [ ! -d "test_data/input/" ] && ! mkdir "test_data/input/"; then
+    exit 1
+fi
+if [ ! -d "test_data/output/" ] && ! mkdir "test_data/output/"; then
+    exit 1
+fi
 
 
 # 編譯 shared library
 docker run --rm -it -v .:/mnt/ ortools/alpine/dev /bin/sh -c "cd /mnt/ && make build_all"
 
 # python 造假資料
-mkdir test_data/input/ test_data/output/
 python3 make_test_data.py
 
 # 複製 shared library 到容器中 執行測試
