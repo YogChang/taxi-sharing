@@ -4,6 +4,8 @@
 #include "src/sharing/wrapper/sharing_wrapper.hpp"
 #include "src/sharing/dao/node.h"
 
+#include <cmath>
+
 #ifndef SRC_SHARING_ALGO_SHARINGMODEL_HPP_
 #define SRC_SHARING_ALGO_SHARINGMODEL_HPP_
 
@@ -14,8 +16,8 @@ using namespace operations_research;
 
 struct Route {
   Route(const Coordinates &coordinates_from, const Coordinates &coordinates_to) {
-    distance = std::abs(coordinates_from.longitude - coordinates_to.longitude) + std::abs(coordinates_from.latitude - coordinates_to.latitude);
-    distance /= 500000000000;
+    auto sum = std::abs(coordinates_from.longitude - coordinates_to.longitude) + std::abs(coordinates_from.latitude - coordinates_to.latitude);
+    distance = std::max(std::int64_t(sum * 100), std::int64_t{1});
     time = distance;
 
   }

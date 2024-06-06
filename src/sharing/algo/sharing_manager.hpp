@@ -36,6 +36,7 @@ class SharingManager {
   auto AddVehicleTimeWindow() -> void;
   auto AddOrderTimeWindow() -> void;
   auto AddPickupAndDelivery() -> void;
+  auto AddDemandDimension() -> void;
 
  private:
   const SharingModel &sharing_model;

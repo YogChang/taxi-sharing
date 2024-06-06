@@ -60,6 +60,7 @@ const std::string StatusOfSearch(const operations_research::RoutingModel::Status
 
 const auto distance_cost_dimension_name = std::string{"Distance"};
 const auto time_cost_dimension_name = std::string{"Time"};
+const auto capacity_cost_dimension_name = std::string{"Capacity"};
 
 SharingManager::SharingManager(const SharingModel &sharing_model) : sharing_model(sharing_model) {
   DebugPrint << "SharingManager::SharingManager()" << std::endl;
@@ -215,6 +216,58 @@ auto SharingManager::AddPickupAndDelivery() -> void {
 
   }
 
+}
+
+auto SharingManager::AddDemandDimension() -> void {
+  // auto callback = [&](std::int64_t node_index) -> std::int64_t
+  // {
+  //   int idx = this->routing_manager().IndexToNode(node_index).value();
+
+  //   return this->assign_model.demand(idx);
+  // };
+
+  // auto callback_index = this->routing_model->RegisterUnaryTransitCallback(callback);
+
+  // this->routing_model->AddDimensionWithVehicleCapacity(
+  //     callback_index,
+  //     1000,
+  //     this->assign_model.vehicle_capacities(),
+  //     false,
+  //     dimension_name);
+
+  // auto dimension = this->routing_model->GetMutableDimension(dimension_name);
+  // for (std::size_t i = 0; i < this->assign_model.all_nodes().size(); ++i)
+  // {
+  //   auto node = this->assign_model.node(i);
+  //   auto index = this->routing_manager().NodeToIndex(RoutingIndexManager::NodeIndex(i));
+
+  //   if (node.type != LocationType::DUMMY_RELOAD_MISSION &&
+  //       node.type != LocationType::VEHICLE_START &&
+  //       node.type != LocationType::VEHICLE_DUMMY_START &&
+  //       node.type != LocationType::VEHICLE_END &&
+  //       node.type != LocationType::VEHICLE_DUMMY_END)
+  //   {
+  //     dimension->SlackVar(index)->SetValue(0);
+  //   }
+
+  //   if (node.type != LocationType::VEHICLE_START &&
+  //       node.type != LocationType::VEHICLE_DUMMY_START &&
+  //       node.type != LocationType::VEHICLE_END &&
+  //       node.type != LocationType::VEHICLE_DUMMY_END)
+  //   {
+  //     this->routing_model->AddVariableMinimizedByFinalizer(dimension->CumulVar(index));
+  //   }
+  // }
+
+  // for (std::size_t i = 0; i < this->assign_model.number_of_vehicles(); ++i)
+  // {
+  //   auto start_index = this->routing_model->Start(i);
+  //   dimension->SlackVar(start_index)->SetValue(0);
+
+  //   // auto end_index = this->routing_model->End(i);
+  //   // dimension->SlackVar(end_index)->SetValue(0);
+  //   // this->routing_model->AddVariableMinimizedByFinalizer(dimension->CumulVar(end_index));
+  // }
 }
 
 

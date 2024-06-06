@@ -13,15 +13,15 @@ namespace airsharing {
 
 class Coordinates {
  public:
-  Coordinates(const std::int64_t &longitude, const std::int64_t &latitude) : longitude(longitude), latitude(latitude) {}
+  Coordinates(const double &longitude, const double &latitude) : longitude(longitude), latitude(latitude) {}
   Coordinates() {}
   ~Coordinates() {}
   auto ToJson() -> json;
 
   // 經度
-  std::int64_t longitude = 0;
+  double longitude = 0;
   // 緯度
-  std::int64_t latitude = 0;
+  double latitude = 0;
 
 } DummyCoordinates(-1, -1);
 

@@ -116,10 +116,6 @@ auto Solution::ToJson() -> json {
 }
 
 auto Solution::ToGeoJson() -> json {
-  auto to_double = [] (const std::int64_t &i) {
-    return static_cast<double>(i) / 100000000000000;
-  };
-
   auto to_time_str = [] (const std::int64_t &i) {
     auto time_str = std::string();
     time_str += std::to_string(i / 60);
@@ -139,7 +135,7 @@ auto Solution::ToGeoJson() -> json {
 
       if (node.nodetype == NodeType::ORDER_DIRECT) {
         auto coordinates = node.order.direct_location;
-        auto temp_node  = geo_hash_json::Node(to_double(coordinates.longitude), to_double(coordinates.latitude));
+        auto temp_node  = geo_hash_json::Node(coordinates.longitude, coordinates.latitude);
         temp_node.AddProperty("內容", node.order.code + "-上車");
         temp_node.AddProperty("預定上車時間", to_time_str(node.order.start_time));
         temp_node.AddProperty("抵達時間", to_time_str(d.arrival_time_early) + " ~ "+ to_time_str(d.arrival_time_lately));
@@ -149,7 +145,7 @@ auto Solution::ToGeoJson() -> json {
 
       } else if (node.nodetype == NodeType::ORDER_DELIVERY) {
         auto coordinates = node.order.delivery_location;
-        auto temp_node  = geo_hash_json::Node(to_double(coordinates.longitude), to_double(coordinates.latitude));
+        auto temp_node  = geo_hash_json::Node(coordinates.longitude, coordinates.latitude);
         temp_node.AddProperty("內容", node.order.code + "-下車");
         temp_node.AddProperty("預定最晚下車時間", to_time_str(node.order.end_time));
         temp_node.AddProperty("抵達時間", to_time_str(d.arrival_time_early) + " ~ "+ to_time_str(d.arrival_time_lately));

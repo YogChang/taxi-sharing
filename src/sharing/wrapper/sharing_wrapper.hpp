@@ -59,9 +59,9 @@ const Parameter SharingWrapper::FromJson(const nlohmann::json &json_obj) {
     auto coordinates = Coordinates();
 
     if (json_obj.contains("longitude"))
-      coordinates.longitude = json_obj.at("longitude").get<std::int64_t>();
+      coordinates.longitude = json_obj.at("longitude").get<double>();
     if (json_obj.contains("latitude"))
-      coordinates.latitude = json_obj.at("latitude").get<std::int64_t>();
+      coordinates.latitude = json_obj.at("latitude").get<double>();
 
     return coordinates;
   };
