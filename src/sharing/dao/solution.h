@@ -2,6 +2,12 @@
 #include <string>
 #include <vector>
 
+
+#ifndef GEOHASH_JSON_H_
+#include "dependencies/geohash_json.hpp"
+#define GEOHASH_JSON_H_
+#endif
+
 #include "src/sharing/config.h"
 
 #ifndef SRC_SHARING_DAO_SOLUTION_H_
@@ -53,6 +59,11 @@ struct Report {
   std::int64_t memory_usage = -1;
   std::int64_t branches = -1;
   std::int64_t solutions = -1;
+  std::int64_t droppeds_num = -1;
+  std::int64_t minimum_obj_cost = -1;
+  std::int64_t totally_vehicles_num = -1;
+  std::int64_t totally_orders_num = -1;
+  std::int64_t used_vehicles_num = 0;
   
   std::string version = "1.0.0";
   std::string routing_status = "UNKNOWN_STATUS";
@@ -65,7 +76,12 @@ struct Report {
       {"memory_usage", memory_usage},
       {"branches", branches},
       {"solutions", solutions},
-      {"routing_status", routing_status}
+      {"routing_status", routing_status},
+      {"droppeds_num", droppeds_num},
+      {"minimum_obj_cost", minimum_obj_cost},
+      {"totally_vehicles_num", totally_vehicles_num},
+      {"totally_orders_num", totally_orders_num},
+      {"used_vehicles_num", used_vehicles_num}
     };
 
     return ret;
@@ -77,6 +93,7 @@ class Solution {
   Solution() {}
   ~Solution() {}
   auto ToJson() -> json;
+  auto ToGeoJson() -> json;
 
   std::vector<ValidVehicle> valid_vehicles;
   std::vector<Destination> droppeds;
@@ -98,6 +115,59 @@ auto Solution::ToJson() -> json {
   return ret;
 }
 
+auto Solution::ToGeoJson() -> json {
+  auto to_double = [] (const std::int64_t &i) {
+    return static_cast<double>(i) / 100000000000000;
+  };
+
+  auto to_time_str = [] (const std::int64_t &i) {
+    auto time_str = std::string();
+    time_str += std::to_string(i / 60);
+    time_str += ":";
+    time_str += std::to_string(i % 60);
+    return time_str;
+  };
+
+// =========================================
+  auto solution_geo = geo_hash_json::GeoHashJson();
+
+  for (auto v : this->valid_vehicles) {
+    auto tmp_v = geo_hash_json::Vehicle(v.vehicle.code);
+
+    for (auto d : v.destinations) {
+      auto node = d.node;
+
+      if (node.nodetype == NodeType::ORDER_DIRECT) {
+        auto coordinates = node.order.direct_location;
+        auto temp_node  = geo_hash_json::Node(to_double(coordinates.longitude), to_double(coordinates.latitude));
+        temp_node.AddProperty("內容", node.order.code + ":上車");
+        temp_node.AddProperty("預定上車時間", to_time_str(node.order.start_time));
+        temp_node.AddProperty("容許最早時間", to_time_str(d.arrival_time_early));
+        temp_node.AddProperty("容許最晚時間", to_time_str(d.arrival_time_lately));
+        temp_node.AddProperty("司機累計里程", std::to_string(d.arrival_distance));
+        tmp_v.AddNode(temp_node);
+
+
+      } else if (node.nodetype == NodeType::ORDER_DELIVERY) {
+        auto coordinates = node.order.delivery_location;
+        auto temp_node  = geo_hash_json::Node(to_double(coordinates.longitude), to_double(coordinates.latitude));
+        temp_node.AddProperty("內容", node.order.code + ":下車");
+        temp_node.AddProperty("預定上車時間", to_time_str(node.order.end_time));
+        temp_node.AddProperty("容許最早時間", to_time_str(d.arrival_time_early));
+        temp_node.AddProperty("容許最晚時間", to_time_str(d.arrival_time_lately));
+        temp_node.AddProperty("司機累計里程", std::to_string(d.arrival_distance));
+        tmp_v.AddNode(temp_node);
+      } else {
+
+      }
+
+    }
+
+    solution_geo.AddVehicle(tmp_v);
+  }
+
+  return solution_geo.ToJson();
+}
 
 
 }  // namespace airsharing

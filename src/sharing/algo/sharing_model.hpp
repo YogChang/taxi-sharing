@@ -15,7 +15,9 @@ using namespace operations_research;
 struct Route {
   Route(const Coordinates &coordinates_from, const Coordinates &coordinates_to) {
     distance = std::abs(coordinates_from.longitude - coordinates_to.longitude) + std::abs(coordinates_from.latitude - coordinates_to.latitude);
+    distance /= 500000000000;
     time = distance;
+
   }
   Route(std::string type) {
     if (type.compare("ZeroRoute") == 0) {

@@ -20,11 +20,7 @@ namespace airouting {
 namespace airsharing {
 using namespace operations_research;
 
-
-struct SearchRecord {
-  std::int64_t time;
-  std::int64_t cost;
-};
+auto Dispatch(const std::string &str) -> const std::string;
 
 class SharingManager {
  public:
@@ -43,13 +39,12 @@ class SharingManager {
 
  private:
   const SharingModel &sharing_model;
+
   std::vector<RoutingIndexManager> routing_managers;
   RoutingModel *routing_model = nullptr;
   RoutingSearchParameters routing_search_parameter = DefaultRoutingSearchParameters();
-  std::vector<SearchRecord> search_records;
-  SearchRecord minimum_cost_record = {INT64_MAX, INT64_MAX};
 
-  // auto AddSearchRecord() -> void;
+
   auto ConvertSolution(const operations_research::Assignment &assignment) -> const Solution;
 };
 

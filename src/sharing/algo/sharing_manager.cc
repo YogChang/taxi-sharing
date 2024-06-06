@@ -10,6 +10,32 @@
 namespace airouting {
 namespace airsharing {
 
+auto Dispatch(const std::string &str) -> const std::string {
+  airouting::airsharing::DebugPrint << "start Dispatch" << std::endl;
+  auto parameter = airouting::airsharing::SharingWrapper::FromJson(str);
+
+  auto model = airouting::airsharing::SharingModel(parameter);
+
+  auto manager = airouting::airsharing::SharingManager(model);
+
+  manager.AddTransitDistanceDimension();
+  manager.AddTransitTimeDimension();
+  manager.AddCostEvaluatorOfDistance();
+  manager.AddPriorityDisjunction();
+  manager.AddVehicleTimeWindow();
+  manager.AddOrderTimeWindow();
+  manager.AddPickupAndDelivery();
+
+  auto solution = manager.StartCalculate();
+
+  // auto ret = json();
+  // ret["geo_json"] = solution.ToGeoJson();
+  // ret["solution"] = solution.ToJson();
+
+  return solution.ToGeoJson().dump();
+}
+
+
 
 const std::string StatusOfSearch(const operations_research::RoutingModel::Status &status) {
   switch (status) {
@@ -186,16 +212,6 @@ auto SharingManager::AddPickupAndDelivery() -> void {
 
 }
 
-// auto SharingManager::AddSearchRecord() -> void {
-//   SearchRecord search_record;
-//   search_record.cost = this->routing_model->CostVar()->Min();
-//   search_record.time = this->routing_model->solver()->wall_time();
-//   this->search_records.push_back(search_record);
-
-//   if (search_record.cost < this->minimum_cost_record.cost) {
-//     this->minimum_cost_record = search_record;
-//   }
-// }
 
 auto SharingManager::StartCalculate() -> const Solution {
 
@@ -216,9 +232,6 @@ auto SharingManager::StartCalculate() -> const Solution {
   //  設定迭代時間上限
   this->routing_search_parameter.mutable_time_limit()->set_seconds(this->sharing_model.strategy().time_limit);
 
-  // //  設定 callback
-  // std::function<void()> callback = [&](){this->AddSearchRecord();};
-  // this->routing_model->AddAtSolutionCallback(callback);
 
   //  開始計算
   auto assignment = this->routing_model->SolveWithParameters(this->routing_search_parameter);
@@ -235,6 +248,7 @@ auto SharingManager::ConvertSolution(const operations_research::Assignment &assi
   if (this->routing_model->status() == RoutingModel::Status::ROUTING_SUCCESS || this->routing_model->status() == RoutingModel::Status::ROUTING_PARTIAL_SUCCESS_LOCAL_OPTIMUM_NOT_REACHED) {
     const auto &time_dimension = this->routing_model->GetDimensionOrDie(time_cost_dimension_name);
 
+
     // vehicle routes
     for (std::size_t v_num = 0; v_num < this->sharing_model.vehicles_size(); ++v_num) {
       auto vehicle = this->sharing_model.parameter.vehicles.at(v_num);
@@ -242,6 +256,7 @@ auto SharingManager::ConvertSolution(const operations_research::Assignment &assi
       auto valid_vehicle = ValidVehicle(vehicle);
       //  valid vehicle
       if (this->routing_model->IsVehicleUsed(assignment, v_num)) {
+        solution.report.used_vehicles_num++;
 
         int64_t index = this->routing_model->Start(v_num);
         int64_t route_distance{0};
@@ -306,6 +321,12 @@ auto SharingManager::ConvertSolution(const operations_research::Assignment &assi
   solution.report.memory_usage = solver->MemoryUsage();
   solution.report.branches = solver->branches();
   solution.report.solutions = solver->solutions();
+  solution.report.droppeds_num = solution.droppeds.size();
+  if (solver->solutions() > 0) {
+    solution.report.minimum_obj_cost = assignment.ObjectiveValue();
+  }
+  solution.report.totally_vehicles_num = this->sharing_model.parameter.vehicles.size();
+  solution.report.totally_orders_num = this->sharing_model.parameter.orders.size();
 
   DebugPrint << "ConvertSolution done" << std::endl;
 
