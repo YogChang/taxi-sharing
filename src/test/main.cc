@@ -41,6 +41,7 @@ int main() {
   manager.AddPriorityDisjunction();
   manager.AddVehicleTimeWindow();
   manager.AddOrderTimeWindow();
+  manager.AddPickupAndDelivery();
 
   auto solution = manager.StartCalculate();
   SaveFile("/mnt/test_data/output/solution.json", solution.ToJson().dump(4));

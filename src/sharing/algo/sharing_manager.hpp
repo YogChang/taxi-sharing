@@ -39,6 +39,7 @@ class SharingManager {
   auto AddPriorityDisjunction() -> void;
   auto AddVehicleTimeWindow() -> void;
   auto AddOrderTimeWindow() -> void;
+  auto AddPickupAndDelivery() -> void;
 
  private:
   const SharingModel &sharing_model;

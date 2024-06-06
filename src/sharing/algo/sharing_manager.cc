@@ -159,6 +159,33 @@ auto SharingManager::AddOrderTimeWindow() -> void {
   }
 }
 
+auto SharingManager::AddPickupAndDelivery() -> void {
+
+  auto dimension = this->routing_model->GetMutableDimension(time_cost_dimension_name);
+
+  for (std::size_t i = 0; i < this->sharing_model.nodes_size(); ++i) {
+    const auto node = this->sharing_model.node(i);
+
+    if (node.nodetype != NodeType::ORDER_DIRECT)
+      continue;
+
+    const auto pickup_index = this->routing_managers.at(0).NodeToIndex(RoutingIndexManager::NodeIndex(i));
+    const auto delivery_index = this->routing_managers.at(0).NodeToIndex(RoutingIndexManager::NodeIndex(i+1));
+
+    this->routing_model->AddPickupAndDelivery(pickup_index, delivery_index);
+
+    this->routing_model->solver()->AddConstraint(this->routing_model->solver()->MakeEquality(
+        this->routing_model->VehicleVar(pickup_index),
+        this->routing_model->VehicleVar(delivery_index)));
+
+    this->routing_model->solver()->AddConstraint(
+        this->routing_model->solver()->MakeLessOrEqual(dimension->CumulVar(pickup_index),
+        dimension->CumulVar(delivery_index)));
+
+  }
+
+}
+
 // auto SharingManager::AddSearchRecord() -> void {
 //   SearchRecord search_record;
 //   search_record.cost = this->routing_model->CostVar()->Min();
@@ -171,11 +198,6 @@ auto SharingManager::AddOrderTimeWindow() -> void {
 // }
 
 auto SharingManager::StartCalculate() -> const Solution {
-
-
-  // DebugPrint << "time_limit" << this->sharing_model.strategy().time_limit << std::endl;
-  // DebugPrint << "first_solution_strategy" << this->sharing_model.strategy().first_solution_strategy << std::endl;
-  // DebugPrint << "metaheuristic" << this->sharing_model.strategy().metaheuristic << std::endl;
 
 
   // 設定 log
