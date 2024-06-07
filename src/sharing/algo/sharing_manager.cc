@@ -298,10 +298,10 @@ auto SharingManager::ConvertSolution(const operations_research::Assignment &assi
           destination.arrival_time_early = assignment.Min(time_var);
           destination.arrival_time_lately = assignment.Max(time_var);
           if (node.nodetype == NodeType::ORDER_DIRECT) {
-            passengers_counter++;
+            passengers_counter += node.order.headcount;
             destination.passengers_num = passengers_counter;
           } else if (node.nodetype == NodeType::ORDER_DELIVERY) {
-            passengers_counter--;
+            passengers_counter -= node.order.headcount;
             destination.passengers_num = passengers_counter;
           }
           valid_vehicle.destinations.push_back(destination);

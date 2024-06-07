@@ -15,7 +15,7 @@ def SaveJson(file_path,data):
 
 def vehicles():
     vehicles_size = 6
-    on_work_time_range = [300, 480]
+    on_work_time_range = [240, 420]
     off_work_time_range = [1020, 1320]
     capacity_range = [3, 6]
 
@@ -38,6 +38,7 @@ lake = [24.939932971435937, 121.63988127252611]
 orders_size = 80
 start_time_range = [360, 1020]
 duration_time_range = [40, 100]
+headcount_range = [1, 3]
 
 
 ave_latitude = (bali[0] + lake[0]) / 2
@@ -54,6 +55,7 @@ def orders():
             "code":  'O-{:04}'.format(_),
             "start_time": start_time,
             "end_time": start_time + random.randint(duration_time_range[0], duration_time_range[1]),
+            "headcount": random.randint(headcount_range[0], headcount_range[1]),
             "direct_location": {
                 "latitude": random.lognormvariate(0, sigma_lat) + ave_latitude -1,
                 "longitude": random.lognormvariate(0, sigma_long) + ave_longitude -1

@@ -77,6 +77,9 @@ const Parameter SharingWrapper::FromJson(const nlohmann::json &json_obj) {
       order.start_time = json_obj.at("start_time").get<std::int64_t>();
     if (json_obj.contains("end_time"))
       order.end_time = json_obj.at("end_time").get<std::int64_t>();
+    if (json_obj.contains("headcount"))
+      order.headcount = json_obj.at("headcount").get<std::int64_t>();
+
 
     if (json_obj.contains("direct_location"))
       order.direct_location = ParseCoordinates(json_obj.at("direct_location"));

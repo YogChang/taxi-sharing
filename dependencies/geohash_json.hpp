@@ -57,13 +57,13 @@ namespace geo_hash_json
     }
 
     this->GeoHashDecode();
-    this->AddProperty("location", this->geo_hash_id);
+    // this->AddProperty("location", this->geo_hash_id);
   }
   Node::Node(const double &input_lng, const double &input_lat)
   {
     this->gps_coordinate = {input_lng, input_lat};
     this->GeoHashEncode();
-    this->AddProperty("location", this->geo_hash_id);
+    // this->AddProperty("location", this->geo_hash_id);
   }
   void Node::ToColor(const std::string &input_color)
   {
@@ -237,8 +237,8 @@ namespace geo_hash_json
   }
   void Vehicle::AddNode(Node input_node)
   {
-    input_node.AddProperty("vehicle_id", this->vehicle_id);
-    input_node.AddProperty("sequence", std::to_string(this->routes.size()));
+    input_node.AddProperty("車輛代碼", this->vehicle_id);
+    input_node.AddProperty("抵達次序", std::to_string(this->routes.size()));
     this->routes.push_back(input_node);
   }
   nlohmann::json Vehicle::LineJson(const bool &is_color)

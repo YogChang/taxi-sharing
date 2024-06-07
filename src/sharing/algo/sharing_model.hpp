@@ -129,10 +129,10 @@ auto SharingModel::demand(const std::size_t &node_index) const -> const std::int
   const auto node = this->nodes.at(node_index);
 
   if (node.nodetype == NodeType::ORDER_DIRECT)
-    return std::int64_t{1};
+    return std::int64_t{node.order.headcount};
 
   if (node.nodetype == NodeType::ORDER_DELIVERY)
-    return std::int64_t{-1};
+    return std::int64_t{-node.order.headcount};
 
   return std::int64_t{0};
 }

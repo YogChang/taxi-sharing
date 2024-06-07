@@ -119,10 +119,15 @@ auto Solution::ToJson() -> json {
 
 auto Solution::ToGeoJson() -> json {
   auto to_time_str = [] (const std::int64_t &i) {
+    auto hour = i / 60;
+    auto minute = i % 60;
+
     auto time_str = std::string();
-    time_str += std::to_string(i / 60);
+    
+    time_str += (hour < 10 ? "0" : "") + std::to_string(hour);
     time_str += ":";
-    time_str += std::to_string(i % 60);
+    time_str += (minute < 10 ? "0" : "") + std::to_string(minute);
+
     return time_str;
   };
 
@@ -138,10 +143,11 @@ auto Solution::ToGeoJson() -> json {
       if (node.nodetype == NodeType::ORDER_DIRECT) {
         auto coordinates = node.order.direct_location;
         auto temp_node  = geo_hash_json::Node(coordinates.longitude, coordinates.latitude);
-        temp_node.AddProperty("內容", node.order.code + "-上車");
+        temp_node.AddProperty("任務內容", node.order.code + "-上車");
         temp_node.AddProperty("預定上車時間", to_time_str(node.order.start_time));
         temp_node.AddProperty("抵達時間", to_time_str(d.arrival_time_early) + " ~ "+ to_time_str(d.arrival_time_lately));
-        temp_node.AddProperty("司機累計里程", std::to_string(d.arrival_distance));
+        temp_node.AddProperty("累計里程", std::to_string(d.arrival_distance));
+        temp_node.AddProperty("訂單人數", std::to_string(node.order.headcount));
         temp_node.AddProperty("乘客數 / 最大載客", std::to_string(d.passengers_num) + " / " + std::to_string(v.vehicle.capacity));
         if (d.passengers_num > v.vehicle.capacity)
           DebugPrint << "error!! " << v.vehicle.code << "-" << node.order.code << " passengers_num > vehicle.capacity" << std::endl;
@@ -151,10 +157,11 @@ auto Solution::ToGeoJson() -> json {
       } else if (node.nodetype == NodeType::ORDER_DELIVERY) {
         auto coordinates = node.order.delivery_location;
         auto temp_node  = geo_hash_json::Node(coordinates.longitude, coordinates.latitude);
-        temp_node.AddProperty("內容", node.order.code + "-下車");
+        temp_node.AddProperty("任務內容", node.order.code + "-下車");
         temp_node.AddProperty("預定最晚下車時間", to_time_str(node.order.end_time));
         temp_node.AddProperty("抵達時間", to_time_str(d.arrival_time_early) + " ~ "+ to_time_str(d.arrival_time_lately));
-        temp_node.AddProperty("司機累計里程", std::to_string(d.arrival_distance));
+        temp_node.AddProperty("累計里程", std::to_string(d.arrival_distance));
+        temp_node.AddProperty("訂單人數", std::to_string(node.order.headcount));
         temp_node.AddProperty("乘客數 / 最大載客", std::to_string(d.passengers_num) + " / " + std::to_string(v.vehicle.capacity));
         tmp_v.AddNode(temp_node);
       } else {

@@ -31,6 +31,8 @@ class Order {
   std::int64_t start_time = minDateTime;
   // 訂單結束時間
   std::int64_t end_time = maxDateTime;
+  // 訂單座車人數
+  std::int64_t headcount = -1;
 
 
 };
@@ -42,6 +44,7 @@ auto Order::ToJson() -> json {
     {"end_time", end_time},
     {"direct_location", direct_location.ToJson()},
     {"delivery_location", delivery_location.ToJson()},
+    {"headcount", headcount}
   };
 
   return ret;
