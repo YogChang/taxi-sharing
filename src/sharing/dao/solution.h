@@ -149,6 +149,7 @@ auto Solution::ToGeoJson() -> json {
         temp_node.AddProperty("累計里程", std::to_string(d.arrival_distance));
         temp_node.AddProperty("訂單人數", std::to_string(node.order.headcount));
         temp_node.AddProperty("乘客數 / 最大載客", std::to_string(d.passengers_num) + " / " + std::to_string(v.vehicle.capacity));
+        temp_node.AddProperty("marker-symbol", "pitch");
         if (d.passengers_num > v.vehicle.capacity)
           DebugPrint << "error!! " << v.vehicle.code << "-" << node.order.code << " passengers_num > vehicle.capacity" << std::endl;
         tmp_v.AddNode(temp_node);
@@ -163,6 +164,7 @@ auto Solution::ToGeoJson() -> json {
         temp_node.AddProperty("累計里程", std::to_string(d.arrival_distance));
         temp_node.AddProperty("訂單人數", std::to_string(node.order.headcount));
         temp_node.AddProperty("乘客數 / 最大載客", std::to_string(d.passengers_num) + " / " + std::to_string(v.vehicle.capacity));
+        temp_node.AddProperty("marker-symbol", "embassy");
         tmp_v.AddNode(temp_node);
       } else {
 
