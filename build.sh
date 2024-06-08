@@ -1,4 +1,7 @@
 # build dir
+if [ ! -d "test_data/" ] && ! mkdir "test_data/"; then
+    exit 1
+fi
 if [ ! -d "test_data/input/" ] && ! mkdir "test_data/input/"; then
     exit 1
 fi
