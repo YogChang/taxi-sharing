@@ -56,4 +56,12 @@ class SharingManager {
 }  // namespace airpublic
 }  // namespace airsharing
 
+// C++ 接口範例
+// zp::Dispatch(json_str,false,"test").Dump(); 你的專案主程式 
+// PyDispatch (Python 函式名稱 , 字串 jsonstr io) , 輸出需存在某個全域變數字串 (pydispatch_output) , python 則是回傳該 pointer
+extern "C" {
+const char *PyDispatch(const char *json_ptr);
+};
+
+
 #endif  // SRC_SHARING_ALGO_SHARING_HPP_

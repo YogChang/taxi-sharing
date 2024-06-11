@@ -1,4 +1,4 @@
-FROM alpine
+FROM python:3-alpine
 
 # Define working directory.
 WORKDIR /usr/local/
@@ -27,5 +27,7 @@ RUN wget https://github.com/nlohmann/json/archive/refs/heads/develop.zip && \
     cp -pr /usr/local/json-develop/single_include/nlohmann /usr/local/include && \
     cd /usr/local && rm -r /usr/local/json-develop
 
+RUN pip install flask
+EXPOSE 5000
 
 CMD ["sh"]

@@ -17,4 +17,7 @@ docker run --rm -it -v .:/mnt/ ortools/alpine/dev /bin/sh -c "cd /mnt/ && make b
 python3 make_test_data.py
 
 # 複製 shared library 到容器中 執行測試
-docker run --rm -it -v .:/mnt/ ortools/alpine/dev /bin/sh -c "cp /mnt/lib/* /usr/local/lib && cd /mnt && ./bin/test"
+docker run --rm -it -v .:/mnt/ ortools/alpine/dev /bin/sh -c "cp /mnt/lib/* /usr/local/lib && cd /mnt && ./bin/test"\
+
+# run flask http server in docker container
+# docker run --rm -it -p 5000:5000 -v .:/mnt  alpine/dev/flask /bin/sh -c "cd /mnt/ && python3 app.py"

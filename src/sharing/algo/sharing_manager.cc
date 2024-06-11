@@ -379,3 +379,16 @@ auto SharingManager::ConvertSolution(const operations_research::Assignment &assi
 }  // namespace airpublic
 }  // namespace airsharing
 
+
+
+
+std::string pydispatch_output = "{}";
+extern "C" {
+const char *PyDispatch(const char *json_ptr) {
+  pydispatch_output.clear();
+  std::string json_str = json_ptr;
+
+  pydispatch_output = airouting::airsharing::Dispatch(json_str);
+  return pydispatch_output.data();
+}
+};
