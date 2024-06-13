@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search</title>
+    <script>
+        function submitForm(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const form = document.getElementById('searchForm');
+            const formData = new FormData(form);
+            const xhr = new XMLHttpRequest();
+
+            xhr.open('POST', '/cautare', true);
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    document.getElementById('result').innerHTML = xhr.responseText;
+                } else {
+                    document.getElementById('result').innerHTML = 'Error: ' + xhr.statusText;
+                }
+            };
+
+            xhr.onerror = function () {
+                document.getElementById('result').innerHTML = 'Request failed';
+            };
+
+            // Display loading message
+            document.getElementById('result').innerHTML = 'Processing, please wait...';
+
+            xhr.send(formData);
+        }
+    </script>
+</head>
+<body>
+    <form id="searchForm" onsubmit="submitForm(event)">
+        <label for="Titlul_cartii">Title:</label>
+        <input type="text" id="Titlul_cartii" name="Titlul_cartii">
+        <input type="submit" value="Submit">
+    </form>
+    <div id="result"></div>
+</body>
+</html>
