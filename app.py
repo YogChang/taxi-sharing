@@ -30,6 +30,8 @@ def authors_recommendations(input_data):
     end_time = time.time()
     elapsed_time = end_time - start_time
 
+    if result_data.get("error"):
+        return f"Error: {result_data['error']}"
     # 将 data 转换为 JSON 字符串
     data_json = json.dumps(result_data['geo_json'])
     

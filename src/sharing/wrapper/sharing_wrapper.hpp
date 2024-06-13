@@ -1,4 +1,5 @@
 
+#include <optional>
 
 #include "src/sharing/dao/parameter.h"
 
@@ -11,8 +12,8 @@ namespace airsharing {
 
 class SharingWrapper {
  public:
-  static const Parameter FromJson(const std::string &str);
-  static const Parameter FromJson(const nlohmann::json &json_obj);
+  static const std::optional<Parameter> FromJson(const std::string &str);
+  static const std::optional<Parameter> FromJson(const nlohmann::json &json_obj);
 
  private:
   SharingWrapper();
@@ -21,12 +22,16 @@ class SharingWrapper {
 
 
 
-const Parameter SharingWrapper::FromJson(const std::string &str) {
+const std::optional<Parameter> SharingWrapper::FromJson(const std::string &str) {
   DebugPrint << " pass - FromJson(str) !!! " << std::endl;
+  if (!json::accept(str)) {
+    DebugPrint << ErrorCode(1, "parse error");
+    return std::nullopt;
+  }
   return SharingWrapper::FromJson(json::parse(str));
 }
 
-const Parameter SharingWrapper::FromJson(const nlohmann::json &json_obj) {
+const std::optional<Parameter> SharingWrapper::FromJson(const nlohmann::json &json_obj) {
   // define region parser
 
   const auto ParseStrategy = [] (const nlohmann::json &json_obj) -> const Strategy {
@@ -113,6 +118,12 @@ const Parameter SharingWrapper::FromJson(const nlohmann::json &json_obj) {
     parameter.orders.resize(json_orders.size());
     std::transform(json_orders.begin(), json_orders.end(), parameter.orders.begin(), ParseOrder);
   }
+
+  if (parameter.orders.size() == 0 || parameter.vehicles.size() == 0) {
+    DebugPrint << ErrorCode(1, "no order or vehicle");
+    return std::nullopt;
+  }
+
 
   return parameter;
 }

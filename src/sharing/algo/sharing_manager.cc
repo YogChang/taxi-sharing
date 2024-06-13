@@ -12,9 +12,16 @@ namespace airsharing {
 
 auto Dispatch(const std::string &str) -> const std::string {
   airouting::airsharing::DebugPrint << "start Dispatch" << std::endl;
+  auto ret = json();
+
   auto parameter = airouting::airsharing::SharingWrapper::FromJson(str);
 
-  auto model = airouting::airsharing::SharingModel(parameter);
+  if (!parameter) {
+    ret["error"] = DebugPrint.ToJson();
+    return ret.dump();
+  }
+
+  auto model = airouting::airsharing::SharingModel(parameter.value());
 
   auto manager = airouting::airsharing::SharingManager(model);
 
@@ -29,9 +36,11 @@ auto Dispatch(const std::string &str) -> const std::string {
 
   auto solution = manager.StartCalculate();
 
-  auto ret = json();
-  ret["geo_json"] = solution.ToGeoJson();
-  ret["solution"] = solution.ToJson();
+  ret = {
+    {"geo_json", solution.ToGeoJson()},
+    {"solution", solution.ToJson()}
+  };
+
 
   return ret.dump();
 }

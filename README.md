@@ -6,7 +6,7 @@ taxi-sharing.
 ### 1. Build docker image.
 
 ```shell=
-docker build . -t="ortools/alpine/dev"
+docker build . -t="alpine/dev/flask"
 ```
 
 

@@ -14,10 +14,21 @@ namespace airouting {
 namespace airsharing {
 using json = nlohmann::json;
 
-
+struct ErrorCode {
+    const int code = 0;
+    const std::string message = "";
+    ErrorCode(const int code, const std::string& message) : code(code), message(message) {}
+    auto ToJson() -> json {
+        return json {
+            {"code", code},
+            {"message", message}
+        };
+    }
+};
 
 class DebugConfig {
     const bool is_debug_;
+    std::vector<ErrorCode> error_codes_;
 public:
     template<typename T>
     DebugConfig& log(const T& data) {
@@ -35,6 +46,17 @@ public:
       return *this;
     }
 
+    DebugConfig& log(const ErrorCode& error_code) {
+        error_codes_.push_back(error_code);
+
+        return *this;
+    }
+    json ToJson() {
+        std::vector<json> json_error_codes_(this->error_codes_.size());
+        std::transform(this->error_codes_.begin(), this->error_codes_.end(), json_error_codes_.begin(), [](ErrorCode e) { return e.ToJson(); });
+
+        return json_error_codes_;
+    }
 
 } DebugPrint(true);
 
