@@ -20,4 +20,4 @@ docker run --rm -it -p 5000:5000 -v .:/mnt  alpine/dev/flask /bin/sh -c "cd /mnt
 docker run --rm -it -v .:/mnt/ alpine/dev/flask /bin/sh -c "cp /mnt/lib/* /usr/local/lib && cd /mnt && ./bin/test"
 
 # run flask http server in docker container
-# docker run --rm -it -p 5000:5000 -v .:/mnt  alpine/dev/flask /bin/sh -c "cd /mnt/ && python3 app.py"
+# docker run --rm -it -p 5000:5000 -v .:/mnt  alpine/dev/flask /bin/sh -c "cd /mnt/ && python3 app.py & ngrok http http://localhost:5000"
