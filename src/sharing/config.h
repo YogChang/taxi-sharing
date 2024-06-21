@@ -82,6 +82,8 @@ static const std::int64_t maxDateTime = 253402300799L;
 
 static const std::int64_t maxOfSystem = INT64_MAX;
 
+static const std::string separateSymbol = "||";
+
 
 }  // namespace airpublic
 }  // namespace airsharing

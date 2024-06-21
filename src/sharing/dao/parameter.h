@@ -5,6 +5,7 @@
 #include "src/sharing/dao/vehicle.h"
 #include "src/sharing/dao/order.h"
 #include "src/sharing/dao/strategy.h"
+#include "src/sharing/dao/route.h"
 
 #include <string>
 #include <vector>
@@ -28,6 +29,7 @@ class Parameter {
   Strategy strategy;
   std::vector<Vehicle> vehicles;
   std::vector<Order> orders;
+  std::vector<Route> routes;
 
 };
 
@@ -42,6 +44,10 @@ auto Parameter::ToJson() -> json {
   std::vector<json> orders_json(this->orders.size());
   std::transform(this->orders.begin(), this->orders.end(), orders_json.begin(), [](Order o) { return o.ToJson(); });
   ret["orders"] = orders_json;
+
+  std::vector<json> routes_json(this->routes.size());
+  std::transform(this->routes.begin(), this->routes.end(), routes_json.begin(), [](Route r) { return r.ToJson(); });
+  ret["routes"] = routes_json;
 
   return ret;
 }

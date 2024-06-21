@@ -94,6 +94,19 @@ const std::optional<Parameter> SharingWrapper::FromJson(const nlohmann::json &js
     return order;
   };
 
+  const auto ParseRoute = [] (const nlohmann::json &json_obj) -> const Route {
+    auto route = Route();
+
+    if (json_obj.contains("code"))
+      route.code = json_obj.at("code").get<std::string>();
+    if (json_obj.contains("time"))
+      route.time = json_obj.at("time").get<std::int64_t>();
+    if (json_obj.contains("distance"))
+      route.distance = json_obj.at("distance").get<std::int64_t>();
+
+    return route;
+  };
+
   // =============================================================================================================
 
   // start to parse
@@ -122,6 +135,14 @@ const std::optional<Parameter> SharingWrapper::FromJson(const nlohmann::json &js
   if (parameter.orders.size() == 0 || parameter.vehicles.size() == 0) {
     DebugPrint << ErrorCode(1, "no order or vehicle");
     return std::nullopt;
+  }
+
+
+  DebugPrint << " pass - region routes !!! " << std::endl;
+  if (json_obj.contains("routes")) {
+    const auto json_routes = json_obj.at("routes");
+    parameter.routes.resize(json_routes.size());
+    std::transform(json_routes.begin(), json_routes.end(), parameter.routes.begin(), ParseRoute);
   }
 
 

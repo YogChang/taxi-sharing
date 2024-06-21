@@ -65,6 +65,16 @@ def orders():
     ]
 
 
+def routes():
+    routes_size = 1000
+
+    return [
+        {
+            "code": "0000||1111",
+            "distance": 100,
+            "time": 50
+        } for i in range(routes_size)
+    ]
 
 def strategy():
     return {
@@ -78,6 +88,7 @@ if __name__ == '__main__':
     ret = {
         "vehicles": vehicles(),
         "orders": orders(),
+        "routes": routes(),
         "strategy": strategy()
     }
 

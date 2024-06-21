@@ -14,29 +14,6 @@ namespace airsharing {
 using namespace operations_research;
 
 
-struct Route {
-  Route(const Coordinates &coordinates_from, const Coordinates &coordinates_to) {
-    auto sum = std::abs(coordinates_from.longitude - coordinates_to.longitude) + std::abs(coordinates_from.latitude - coordinates_to.latitude);
-    distance = std::max(std::int64_t(sum * 100), std::int64_t{1});
-    time = distance;
-
-  }
-  Route(std::string type) {
-    if (type.compare("ZeroRoute") == 0) {
-      distance = 0;
-      time = 0;
-    } else if (type.compare("UnreachableRoute") == 0) {
-      distance = maxOfSystem;
-      time = maxOfSystem;
-    }
-  }
-
-  std::int64_t distance = -1;
-  std::int64_t time = -1;
-
-} ZeroRoute("ZeroRoute"), UnreachableRoute("UnreachableRoute");
-
-
 
 class SharingModel {
  public:
@@ -95,6 +72,16 @@ auto SharingModel::Initialize() -> void {
   }
 
   DebugPrint << "this->nodes.size() : " << this->nodes.size() << std::endl;
+
+  for (const auto &route: this->parameter.routes) {
+    std::size_t found = route.code.find(separateSymbol);
+    if (found != std::string::npos) {
+      std::string from_code = route.code.substr(0, found);
+      std::string to_code = route.code.substr(found + separateSymbol.size());
+      // DebugPrint << from_code << " -> " << to_code << std::endl;
+    }
+
+  }
 }
 
 auto SharingModel::vehicle_start_node_indexies() const -> const std::vector<RoutingIndexManager::NodeIndex> {
