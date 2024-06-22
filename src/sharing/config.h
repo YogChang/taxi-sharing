@@ -54,6 +54,7 @@ public:
     json ToJson() {
         std::vector<json> json_error_codes_(this->error_codes_.size());
         std::transform(this->error_codes_.begin(), this->error_codes_.end(), json_error_codes_.begin(), [](ErrorCode e) { return e.ToJson(); });
+        error_codes_.clear();
 
         return json_error_codes_;
     }

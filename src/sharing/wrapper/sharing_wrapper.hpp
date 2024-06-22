@@ -134,12 +134,6 @@ const std::optional<Parameter> SharingWrapper::FromJson(const nlohmann::json &js
     std::transform(json_orders.begin(), json_orders.end(), parameter.orders.begin(), ParseOrder);
   }
 
-  if (parameter.orders.size() == 0 || parameter.vehicles.size() == 0) {
-    DebugPrint << ErrorCode(1, "no order or vehicle");
-    return std::nullopt;
-  }
-
-
   DebugPrint << " pass - region routes !!! " << std::endl;
   if (json_obj.contains("routes")) {
     const auto json_routes = json_obj.at("routes");
@@ -147,6 +141,21 @@ const std::optional<Parameter> SharingWrapper::FromJson(const nlohmann::json &js
     std::transform(json_routes.begin(), json_routes.end(), parameter.routes.begin(), ParseRoute);
   }
 
+
+  if (parameter.orders.size() == 0) {
+    DebugPrint << ErrorCode(1, "no order data !!");
+    return std::nullopt;
+  }
+
+  if (parameter.vehicles.size() == 0) {
+    DebugPrint << ErrorCode(1, "no vehicle data !!");
+    return std::nullopt;
+  }
+
+  if (parameter.routes.size() == 0) {
+    DebugPrint << ErrorCode(1, "no routes data !!");
+    return std::nullopt;
+  }
 
   return parameter;
 }

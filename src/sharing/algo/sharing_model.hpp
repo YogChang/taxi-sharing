@@ -5,6 +5,7 @@
 #include "src/sharing/dao/node.h"
 
 #include <cmath>
+#include <unordered_map>
 
 #ifndef SRC_SHARING_ALGO_SHARINGMODEL_HPP_
 #define SRC_SHARING_ALGO_SHARINGMODEL_HPP_
@@ -38,6 +39,7 @@ class SharingModel {
 
   std::vector<Node> nodes;
   auto Initialize() -> void;
+  std::unordered_map<std::string, Route> routes;
 };
 
 SharingModel::SharingModel(const Parameter &parameter) : parameter(parameter) {
@@ -74,14 +76,10 @@ auto SharingModel::Initialize() -> void {
   DebugPrint << "this->nodes.size() : " << this->nodes.size() << std::endl;
 
   for (const auto &route: this->parameter.routes) {
-    std::size_t found = route.code.find(separateSymbol);
-    if (found != std::string::npos) {
-      std::string from_code = route.code.substr(0, found);
-      std::string to_code = route.code.substr(found + separateSymbol.size());
-      DebugPrint << from_code << " -> " << to_code << std::endl;
-    }
-
+    routes[route.code] = route;
   }
+
+  DebugPrint << "this->routes.size() : " << this->routes.size() << std::endl;
 }
 
 auto SharingModel::vehicle_start_node_indexies() const -> const std::vector<RoutingIndexManager::NodeIndex> {
@@ -138,6 +136,8 @@ auto SharingModel::vehicle_capacities() const -> const std::vector<std::int64_t>
 }
 
 auto SharingModel::FindRoute(const std::size_t &node_from_index, const std::size_t &node_to_index) const -> const Route {
+  if (routes.empty())
+    return UnreachableRoute;
 
   const auto from_node = this->nodes.at(node_from_index);
   const auto to_node = this->nodes.at(node_to_index);
@@ -154,25 +154,45 @@ auto SharingModel::FindRoute(const std::size_t &node_from_index, const std::size
   if (from_node.nodetype == NodeType::ORDER_DIRECT && to_node.nodetype == NodeType::ORDER_DIRECT) {
     const auto from_coordinates = from_node.order.direct_location;
     const auto to_coordinates = to_node.order.direct_location;
-    return Route(from_coordinates, to_coordinates);
+    const auto route_code = from_coordinates.code + separateSymbol + to_coordinates.code;
+
+    if (routes.count(route_code) > 0)
+      return routes.at(route_code);
+
+    return UnreachableRoute;
   }
 
   if (from_node.nodetype == NodeType::ORDER_DIRECT && to_node.nodetype == NodeType::ORDER_DELIVERY) {
     const auto from_coordinates = from_node.order.direct_location;
     const auto to_coordinates = to_node.order.delivery_location;
-    return Route(from_coordinates, to_coordinates);
+    const auto route_code = from_coordinates.code + separateSymbol + to_coordinates.code;
+
+    if (routes.count(route_code) > 0)
+      return routes.at(route_code);
+
+    return UnreachableRoute;
   }
 
   if (from_node.nodetype == NodeType::ORDER_DELIVERY && to_node.nodetype == NodeType::ORDER_DIRECT) {
     const auto from_coordinates = from_node.order.delivery_location;
     const auto to_coordinates = to_node.order.direct_location;
-    return Route(from_coordinates, to_coordinates);
+    const auto route_code = from_coordinates.code + separateSymbol + to_coordinates.code;
+
+    if (routes.count(route_code) > 0)
+      return routes.at(route_code);
+
+    return UnreachableRoute;
   }
 
   if (from_node.nodetype == NodeType::ORDER_DELIVERY && to_node.nodetype == NodeType::ORDER_DELIVERY) {
     const auto from_coordinates = from_node.order.delivery_location;
     const auto to_coordinates = to_node.order.delivery_location;
-    return Route(from_coordinates, to_coordinates);
+    const auto route_code = from_coordinates.code + separateSymbol + to_coordinates.code;
+
+    if (routes.count(route_code) > 0)
+      return routes.at(route_code);
+
+    return UnreachableRoute;
   }
 
   if (from_node.nodetype == NodeType::VEHICLE_START) {

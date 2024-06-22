@@ -34,20 +34,15 @@ struct Coordinates {
 } DummyCoordinates(-1, -1);
 
 
-
+const char* kZeroRoute = "ZeroRoute";
+const char* kUnreachableRoute = "UnreachableRoute";
 struct Route {
 
-  Route(const Coordinates &coordinates_from, const Coordinates &coordinates_to) {
-    auto sum = std::abs(coordinates_from.longitude - coordinates_to.longitude) + std::abs(coordinates_from.latitude - coordinates_to.latitude);
-    distance = std::max(std::int64_t(sum * 100), std::int64_t{1});
-    time = distance;
-
-  }
-  Route(std::string type) {
-    if (type.compare("ZeroRoute") == 0) {
+  Route(const std::string code) : code(code) {
+    if (code.compare(kZeroRoute) == 0) {
       distance = 0;
       time = 0;
-    } else if (type.compare("UnreachableRoute") == 0) {
+    } else if (code.compare(kZeroRoute) == 0) {
       distance = maxOfSystem;
       time = maxOfSystem;
     }
@@ -61,7 +56,7 @@ struct Route {
   std::int64_t distance = -1;
   std::int64_t time = -1;
 
-} ZeroRoute("ZeroRoute"), UnreachableRoute("UnreachableRoute");
+} ZeroRoute(kZeroRoute), UnreachableRoute(kUnreachableRoute);
 
 auto Route::ToJson() -> json {
   json ret = {
