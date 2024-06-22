@@ -78,7 +78,7 @@ auto SharingModel::Initialize() -> void {
     if (found != std::string::npos) {
       std::string from_code = route.code.substr(0, found);
       std::string to_code = route.code.substr(found + separateSymbol.size());
-      // DebugPrint << from_code << " -> " << to_code << std::endl;
+      DebugPrint << from_code << " -> " << to_code << std::endl;
     }
 
   }

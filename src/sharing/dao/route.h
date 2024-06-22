@@ -10,6 +10,30 @@
 namespace airouting {
 namespace airsharing {
 
+struct Coordinates {
+
+  Coordinates(const double &longitude, const double &latitude) : longitude(longitude), latitude(latitude) {}
+  Coordinates(const std::string code) : code(code) {}
+  Coordinates() {}
+  ~Coordinates() {}
+  auto ToJson() -> json {
+    return {
+      {"code", code},
+      {"longitude", longitude},
+      {"latitude", latitude}
+    };
+  }
+
+  // code
+  std::string code = "";
+  // 經度
+  double longitude = 0;
+  // 緯度
+  double latitude = 0;
+
+} DummyCoordinates(-1, -1);
+
+
 
 struct Route {
 

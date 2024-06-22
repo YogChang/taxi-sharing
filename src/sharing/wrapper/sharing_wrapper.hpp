@@ -65,6 +65,8 @@ const std::optional<Parameter> SharingWrapper::FromJson(const nlohmann::json &js
   const auto ParseCoordinates = [] (const nlohmann::json &json_obj) -> const Coordinates {
     auto coordinates = Coordinates();
 
+    if (json_obj.contains("code"))
+      coordinates.code = json_obj.at("code").get<std::string>();
     if (json_obj.contains("longitude"))
       coordinates.longitude = json_obj.at("longitude").get<double>();
     if (json_obj.contains("latitude"))
