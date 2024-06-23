@@ -31,8 +31,8 @@ RUN wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz &&
     tar zxvf ngrok-v3-stable-linux-amd64.tgz && rm ngrok-v3-stable-linux-amd64.tgz && \
     mv /usr/local/ngrok /usr/local/bin
 
-RUN pip install flask
-RUN pip install geolib
+RUN pip install flask geolib requests
+
 EXPOSE 5000
 
 CMD ["sh"]

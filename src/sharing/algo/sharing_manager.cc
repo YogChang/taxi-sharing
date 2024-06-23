@@ -151,7 +151,7 @@ auto SharingManager::AddCostEvaluatorOfDistance() -> void {
 }
 
 auto SharingManager::AddPriorityDisjunction() -> void {
-  std::int64_t max_cost = 100000;
+  std::int64_t max_cost = 100000000;
   DebugPrint << "max_cost" << max_cost << std::endl;
 
   for (std::size_t i = 0; i < this->sharing_model.nodes_size(); ++i) {

@@ -1,6 +1,6 @@
 
 
-import sys,os,ctypes,json,codecs,subprocess,random
+import sys,os,ctypes,json,codecs,subprocess,random,requests,functools
 from geolib import geohash
 from itertools import product
 
@@ -16,7 +16,7 @@ def SaveJson(file_path,data):
 
 
 def vehicles():
-    vehicles_size = 6
+    vehicles_size = 8
     on_work_time_range = [240, 420]
     off_work_time_range = [1020, 1320]
     capacity_range = [3, 6]
@@ -33,7 +33,7 @@ def vehicles():
 
 
 def orders(locations):
-    orders_size = 80
+    orders_size = 50
     coor_a = [25.149837552461616, 121.40405342515518]
     coor_b = [24.939932971435937, 121.63988127252611]
 
@@ -76,19 +76,33 @@ def orders(locations):
 
 def routes(locations):
     separateSymbol = "||"
-    distance_coeff = 100
-    time_coeff = 100
+    posts = get_posts(locations)
 
-    lat_lng_sum = lambda from_location,to_location : abs(from_location["longitude"] - to_location["longitude"]) + abs(from_location["longitude"] - to_location["longitude"])
-    result_num = lambda abs_sum,coeff : max(int(abs_sum * coeff), 1)
+    if posts:
+        return [
+            {
+                "code": locations[from_i]["code"] + separateSymbol + locations[to_i]["code"],
+                "distance": int(posts['distances'][from_i][to_i]),
+                "time": int(posts['durations'][from_i][to_i] / 60)
+            } for from_i, to_i in product(range(len(locations)), range(len(locations)))
+        ]
 
-    return [
-        {
-            "code": from_location["code"] + separateSymbol + to_location["code"],
-            "distance": result_num(lat_lng_sum(from_location,to_location),distance_coeff),
-            "time": result_num(lat_lng_sum(from_location,to_location),time_coeff)
-        } for from_location, to_location in product(locations, locations)
-    ]
+    # make fake routes data
+    else:
+        print('Failed to fetch posts from API.')
+        distance_coeff = 120000
+        time_coeff = 150
+
+        lat_lng_sum = lambda from_location,to_location : abs(from_location["longitude"] - to_location["longitude"]) + abs(from_location["longitude"] - to_location["longitude"])
+        result_num = lambda abs_sum,coeff : max(int(abs_sum * coeff), 1)
+
+        return [
+            {
+                "code": from_location["code"] + separateSymbol + to_location["code"],
+                "distance": result_num(lat_lng_sum(from_location,to_location),distance_coeff),
+                "time": result_num(lat_lng_sum(from_location,to_location),time_coeff)
+            } for from_location, to_location in product(locations, locations)
+        ]
 
 
 def strategy():
@@ -98,15 +112,41 @@ def strategy():
         "time_limit": 30
     }
 
+def get_posts(locations):
+
+    coordinates_str = [ '{},{};'.format(ele['longitude'],ele['latitude']) for ele in locations ]
+    url = 'http://router.project-osrm.org/table/v1/driving/' + functools.reduce(lambda a, b: a+b, coordinates_str)[:-1] + '?annotations=distance,duration'
+
+    try:
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            posts = response.json()
+            return posts
+        else:
+            print('Error:', response.status_code)
+            return None
+    except requests.exceptions.RequestException as e:
+        print('Error:', e)
+        return None
+
+
 
 if __name__ == '__main__':
+
     locations = []
+
     ret = {
         "vehicles": vehicles(),
         "orders": orders(locations),
         "routes": routes(locations),
         "strategy": strategy()
     }
+
+    distanc_ls = [ele["distance"] for ele in ret["routes"]]
+    tims_ls = [ele["time"] for ele in ret["routes"]]
+    print('distanc_ave : ' + str(functools.reduce(lambda a, b: a+b, distanc_ls) / len(ret["routes"])))
+    print('time_ave : ' + str(functools.reduce(lambda a, b: a+b, tims_ls) / len(ret["routes"])))
 
     SaveJson('./test_data/input/parameter.json',ret)
     print("make test data done")

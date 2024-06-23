@@ -146,7 +146,7 @@ auto Solution::ToGeoJson() -> json {
         temp_node.AddProperty("任務內容", node.order.code + "-上車");
         temp_node.AddProperty("預定上車時間", to_time_str(node.order.start_time));
         temp_node.AddProperty("抵達時間", to_time_str(d.arrival_time_early) + " ~ "+ to_time_str(d.arrival_time_lately));
-        temp_node.AddProperty("累計里程", std::to_string(d.arrival_distance));
+        temp_node.AddProperty("累計里程", std::to_string(d.arrival_distance/1000));
         temp_node.AddProperty("訂單人數", std::to_string(node.order.headcount));
         temp_node.AddProperty("乘客數 / 最大載客", std::to_string(d.passengers_num) + " / " + std::to_string(v.vehicle.capacity));
         temp_node.AddProperty("marker-symbol", "pitch");
@@ -161,7 +161,7 @@ auto Solution::ToGeoJson() -> json {
         temp_node.AddProperty("任務內容", node.order.code + "-下車");
         temp_node.AddProperty("預定最晚下車時間", to_time_str(node.order.end_time));
         temp_node.AddProperty("抵達時間", to_time_str(d.arrival_time_early) + " ~ "+ to_time_str(d.arrival_time_lately));
-        temp_node.AddProperty("累計里程", std::to_string(d.arrival_distance));
+        temp_node.AddProperty("累計里程", std::to_string(d.arrival_distance/1000));
         temp_node.AddProperty("訂單人數", std::to_string(node.order.headcount));
         temp_node.AddProperty("乘客數 / 最大載客", std::to_string(d.passengers_num) + " / " + std::to_string(v.vehicle.capacity));
         temp_node.AddProperty("marker-symbol", "embassy");
