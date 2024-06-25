@@ -9,13 +9,17 @@ taxi-sharing.
 docker build . -t="alpine/dev/flask"
 ```
 
-
-### 2. Build Algorithm and Test
+### 2. Build Algorithm
 ```shell=
 bash build.sh
 ```
 
-### 3. Run Flask http Server in Container
+### 3. Make mock data
 ```shell=
-docker run --rm -it -p 5000:5000 -v .:/mnt  alpine/dev/flask /bin/sh -c "cd /mnt/ && python3 app.py"
+docker run --rm -it -p 5000:5000 -v .:/mnt  alpine/dev/flask /bin/sh -c "cd /mnt/ && python3 make_test_data.py"
+```
+
+### 3. Run Flask http Server and DB in Container
+```shell=
+docker compose up --build
 ```
