@@ -244,7 +244,7 @@ auto SharingManager::AddDemandDimension() -> void {
       callback_index,
       1000,
       this->sharing_model.vehicle_capacities(),
-      false,
+      true,
       capacity_dimension_name);
 
 }
