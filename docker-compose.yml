@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: your_database_name
+    # volumes:
+    #   - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile-flask
+    environment:
+      SQLALCHEMY_DATABASE_URI: postgresql://user:password@db:5432/your_database_name
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db

@@ -1,0 +1,8 @@
+# Use the official PostGIS image from the Docker Hub
+FROM postgis/postgis:13-3.1-alpine
+
+# Copy the initial database setup script
+COPY init-db.sh /docker-entrypoint-initdb.d/
+
+# Expose the default PostgreSQL port
+EXPOSE 5432

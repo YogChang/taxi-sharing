@@ -1,4 +1,4 @@
-FROM python:3-alpine
+FROM python:3.9-alpine
 
 # Define working directory.
 WORKDIR /usr/local/
@@ -31,7 +31,7 @@ RUN wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz &&
     tar zxvf ngrok-v3-stable-linux-amd64.tgz && rm ngrok-v3-stable-linux-amd64.tgz && \
     mv /usr/local/ngrok /usr/local/bin
 
-RUN pip install flask geolib requests
+RUN pip geolib
 
 EXPOSE 5000
 

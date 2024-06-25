@@ -1,6 +1,6 @@
 
 
-import sys,os,ctypes,json,codecs,subprocess,random,requests,functools
+import sys,os,ctypes,json,codecs,subprocess,random,functools
 from geolib import geohash
 from itertools import product
 
@@ -74,35 +74,35 @@ def orders(locations):
     ]
 
 
-def routes(locations):
-    separateSymbol = "||"
-    posts = get_posts(locations)
+# def routes(locations):
+#     separateSymbol = "||"
+#     posts = get_posts(locations)
 
-    if posts:
-        return [
-            {
-                "code": locations[from_i]["code"] + separateSymbol + locations[to_i]["code"],
-                "distance": int(posts['distances'][from_i][to_i]),
-                "time": int(posts['durations'][from_i][to_i] / 60)
-            } for from_i, to_i in product(range(len(locations)), range(len(locations)))
-        ]
+#     if posts:
+#         return [
+#             {
+#                 "code": locations[from_i]["code"] + separateSymbol + locations[to_i]["code"],
+#                 "distance": int(posts['distances'][from_i][to_i]),
+#                 "time": int(posts['durations'][from_i][to_i] / 60)
+#             } for from_i, to_i in product(range(len(locations)), range(len(locations)))
+#         ]
 
-    # make fake routes data
-    else:
-        print('Failed to fetch posts from API.')
-        distance_coeff = 120000
-        time_coeff = 150
+#     # make fake routes data
+#     else:
+#         print('Failed to fetch posts from API.')
+#         distance_coeff = 120000
+#         time_coeff = 150
 
-        lat_lng_sum = lambda from_location,to_location : abs(from_location["longitude"] - to_location["longitude"]) + abs(from_location["longitude"] - to_location["longitude"])
-        result_num = lambda abs_sum,coeff : max(int(abs_sum * coeff), 1)
+#         lat_lng_sum = lambda from_location,to_location : abs(from_location["longitude"] - to_location["longitude"]) + abs(from_location["longitude"] - to_location["longitude"])
+#         result_num = lambda abs_sum,coeff : max(int(abs_sum * coeff), 1)
 
-        return [
-            {
-                "code": from_location["code"] + separateSymbol + to_location["code"],
-                "distance": result_num(lat_lng_sum(from_location,to_location),distance_coeff),
-                "time": result_num(lat_lng_sum(from_location,to_location),time_coeff)
-            } for from_location, to_location in product(locations, locations)
-        ]
+#         return [
+#             {
+#                 "code": from_location["code"] + separateSymbol + to_location["code"],
+#                 "distance": result_num(lat_lng_sum(from_location,to_location),distance_coeff),
+#                 "time": result_num(lat_lng_sum(from_location,to_location),time_coeff)
+#             } for from_location, to_location in product(locations, locations)
+#         ]
 
 
 def strategy():
@@ -112,23 +112,23 @@ def strategy():
         "time_limit": 30
     }
 
-def get_posts(locations):
+# def get_posts(locations):
 
-    coordinates_str = [ '{},{};'.format(ele['longitude'],ele['latitude']) for ele in locations ]
-    url = 'http://router.project-osrm.org/table/v1/driving/' + functools.reduce(lambda a, b: a+b, coordinates_str)[:-1] + '?annotations=distance,duration'
+#     coordinates_str = [ '{},{};'.format(ele['longitude'],ele['latitude']) for ele in locations ]
+#     url = 'http://router.project-osrm.org/table/v1/driving/' + functools.reduce(lambda a, b: a+b, coordinates_str)[:-1] + '?annotations=distance,duration'
 
-    try:
-        response = requests.get(url)
+#     try:
+#         response = requests.get(url)
 
-        if response.status_code == 200:
-            posts = response.json()
-            return posts
-        else:
-            print('Error:', response.status_code)
-            return None
-    except requests.exceptions.RequestException as e:
-        print('Error:', e)
-        return None
+#         if response.status_code == 200:
+#             posts = response.json()
+#             return posts
+#         else:
+#             print('Error:', response.status_code)
+#             return None
+#     except requests.exceptions.RequestException as e:
+#         print('Error:', e)
+#         return None
 
 
 
@@ -139,14 +139,15 @@ if __name__ == '__main__':
     ret = {
         "vehicles": vehicles(),
         "orders": orders(locations),
-        "routes": routes(locations),
-        "strategy": strategy()
+        # "routes": routes(locations),
+        "strategy": strategy(),
+        "locations":locations
     }
 
-    distanc_ls = [ele["distance"] for ele in ret["routes"]]
-    tims_ls = [ele["time"] for ele in ret["routes"]]
-    print('distanc_ave : ' + str(functools.reduce(lambda a, b: a+b, distanc_ls) / len(ret["routes"])))
-    print('time_ave : ' + str(functools.reduce(lambda a, b: a+b, tims_ls) / len(ret["routes"])))
+    # distanc_ls = [ele["distance"] for ele in ret["routes"]]
+    # tims_ls = [ele["time"] for ele in ret["routes"]]
+    # print('distanc_ave : ' + str(functools.reduce(lambda a, b: a+b, distanc_ls) / len(ret["routes"])))
+    # print('time_ave : ' + str(functools.reduce(lambda a, b: a+b, tims_ls) / len(ret["routes"])))
 
     SaveJson('./test_data/input/parameter.json',ret)
     print("make test data done")
