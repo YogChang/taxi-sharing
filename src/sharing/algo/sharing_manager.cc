@@ -46,6 +46,43 @@ auto Dispatch(const std::string &str) -> const std::string {
 }
 
 
+FirstSolutionStrategy_Value IntToFirstSolutionStrategyValue(int value) {
+  switch (value) {
+    case 1: return operations_research::FirstSolutionStrategy_Value_GLOBAL_CHEAPEST_ARC;
+    case 2: return operations_research::FirstSolutionStrategy_Value_LOCAL_CHEAPEST_ARC;
+    case 3: return operations_research::FirstSolutionStrategy_Value_PATH_CHEAPEST_ARC;
+    case 4: return operations_research::FirstSolutionStrategy_Value_PATH_MOST_CONSTRAINED_ARC;
+    case 5: return operations_research::FirstSolutionStrategy_Value_EVALUATOR_STRATEGY;
+    case 6: return operations_research::FirstSolutionStrategy_Value_ALL_UNPERFORMED;
+    case 7: return operations_research::FirstSolutionStrategy_Value_BEST_INSERTION;
+    case 8: return operations_research::FirstSolutionStrategy_Value_PARALLEL_CHEAPEST_INSERTION;
+    case 9: return operations_research::FirstSolutionStrategy_Value_LOCAL_CHEAPEST_INSERTION;
+    case 10: return operations_research::FirstSolutionStrategy_Value_SAVINGS;
+    case 11: return operations_research::FirstSolutionStrategy_Value_SWEEP;
+    case 12: return operations_research::FirstSolutionStrategy_Value_FIRST_UNBOUND_MIN_VALUE;
+    case 13: return operations_research::FirstSolutionStrategy_Value_CHRISTOFIDES;
+    case 14: return operations_research::FirstSolutionStrategy_Value_SEQUENTIAL_CHEAPEST_INSERTION;
+    case 15: return operations_research::FirstSolutionStrategy_Value_AUTOMATIC;
+    case 0:
+    default: break;
+  }
+  return operations_research::FirstSolutionStrategy_Value_UNSET;
+}
+
+LocalSearchMetaheuristic_Value IntToMetaheuristicValue(int value) {
+  switch (value) {
+    case 1: return operations_research::LocalSearchMetaheuristic_Value_GREEDY_DESCENT;
+    case 2: return operations_research::LocalSearchMetaheuristic_Value_GUIDED_LOCAL_SEARCH;
+    case 3: return operations_research::LocalSearchMetaheuristic_Value_SIMULATED_ANNEALING;
+    case 4: return operations_research::LocalSearchMetaheuristic_Value_TABU_SEARCH;
+    case 5: return operations_research::LocalSearchMetaheuristic_Value_GENERIC_TABU_SEARCH;
+    case 6: return operations_research::LocalSearchMetaheuristic_Value_AUTOMATIC;
+    case 0:
+    default: break;
+  }
+  return operations_research::LocalSearchMetaheuristic_Value_UNSET;
+}
+
 
 const std::string StatusOfSearch(const operations_research::RoutingModel::Status &status) {
   switch (status) {
@@ -254,20 +291,21 @@ auto SharingManager::StartCalculate() -> const Solution {
 
 
   // 設定 log
-  this->routing_search_parameter.set_log_search(true);
+  this->routing_search_parameter.set_log_search((this->sharing_model.strategy().time_limit > 0));
 
   //  設定初始解策略
-  this->routing_search_parameter.set_first_solution_strategy(FirstSolutionStrategy_Value_PARALLEL_CHEAPEST_INSERTION);
+  this->routing_search_parameter.set_first_solution_strategy(IntToFirstSolutionStrategyValue(this->sharing_model.parameter.strategy.first_solution_strategy));
 
-  //  設定啟發式演算法
-  this->routing_search_parameter.set_local_search_metaheuristic(LocalSearchMetaheuristic_Value_SIMULATED_ANNEALING);
+  //  設定啟發式演算法 與迭代時間上限
+  if (this->sharing_model.strategy().time_limit > 0) {
+    this->routing_search_parameter.set_local_search_metaheuristic(IntToMetaheuristicValue(this->sharing_model.parameter.strategy.first_solution_strategy));
+    this->routing_search_parameter.mutable_time_limit()->set_seconds(this->sharing_model.strategy().time_limit);
+  }
+
 
   //  炫炮加速器
   this->routing_model->solver()->SetUseFastLocalSearch(true);
   this->routing_search_parameter.set_use_multi_armed_bandit_concatenate_operators(true);
-
-  //  設定迭代時間上限
-  this->routing_search_parameter.mutable_time_limit()->set_seconds(this->sharing_model.strategy().time_limit);
 
 
   //  開始計算
@@ -374,6 +412,7 @@ auto SharingManager::ConvertSolution(const operations_research::Assignment &assi
   solution.report.branches = solver->branches();
   solution.report.solutions = solver->solutions();
   solution.report.droppeds_num = solution.droppeds.size();
+
   if (solver->solutions() > 0) {
     solution.report.minimum_obj_cost = assignment.ObjectiveValue();
   }
