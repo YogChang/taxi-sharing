@@ -292,10 +292,12 @@ auto SharingManager::StartCalculate() -> const Solution {
   this->routing_search_parameter.set_log_search(true);
 
   //  設定初始解策略
-  this->routing_search_parameter.set_first_solution_strategy(IntToFirstSolutionStrategyValue(this->sharing_model.parameter.strategy.first_solution_strategy));
+  DebugPrint << "first_solution_strategy " << this->sharing_model.strategy().first_solution_strategy << std::endl;
+  this->routing_search_parameter.set_first_solution_strategy(IntToFirstSolutionStrategyValue(this->sharing_model.strategy().first_solution_strategy));
 
   //  設定啟發式演算法
-  this->routing_search_parameter.set_local_search_metaheuristic(IntToMetaheuristicValue(this->sharing_model.parameter.strategy.first_solution_strategy));
+  DebugPrint << "metaheuristic " << this->sharing_model.strategy().metaheuristic << std::endl;
+  this->routing_search_parameter.set_local_search_metaheuristic(IntToMetaheuristicValue(this->sharing_model.strategy().metaheuristic));
 
   //  炫炮加速器
   this->routing_model->solver()->SetUseFastLocalSearch(true);
@@ -416,7 +418,7 @@ auto SharingManager::ConvertSolution(const operations_research::Assignment &assi
   solution.report.branches = solver->branches();
   solution.report.solutions = solver->solutions();
   solution.report.droppeds_num = solution.droppeds.size();
-  solution.report.dropped_penalty_cost = this->sharing_model.parameter.strategy.dropped_penalty_cost;
+  solution.report.dropped_penalty_cost = this->sharing_model.strategy().dropped_penalty_cost;
 
   if (solver->solutions() > 0) {
     solution.report.minimum_obj_cost = assignment.ObjectiveValue();
