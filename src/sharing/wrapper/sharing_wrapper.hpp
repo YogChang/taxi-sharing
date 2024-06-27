@@ -43,6 +43,8 @@ const std::optional<Parameter> SharingWrapper::FromJson(const nlohmann::json &js
       strategy.metaheuristic = json_obj.at("metaheuristic").get<std::int64_t>();
     if (json_obj.contains("time_limit"))
       strategy.time_limit = json_obj.at("time_limit").get<std::int64_t>();
+    if (json_obj.contains("solution_limit"))
+      strategy.solution_limit = json_obj.at("solution_limit").get<std::int64_t>();
 
     return strategy;
   };

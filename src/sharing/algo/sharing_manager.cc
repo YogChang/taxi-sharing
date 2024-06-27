@@ -36,10 +36,8 @@ auto Dispatch(const std::string &str) -> const std::string {
 
   auto solution = manager.StartCalculate();
 
-  ret = {
-    {"geo_json", solution.ToGeoJson()},
-    {"solution", solution.ToJson()}
-  };
+  ret = solution.ToGeoJson();
+  ret["data"] = solution.ToJson();
 
 
   return ret.dump();
@@ -188,8 +186,8 @@ auto SharingManager::AddCostEvaluatorOfDistance() -> void {
 }
 
 auto SharingManager::AddPriorityDisjunction() -> void {
-  std::int64_t max_cost = 100000000;
-  DebugPrint << "max_cost" << max_cost << std::endl;
+  std::int64_t max_cost = this->sharing_model.parameter.strategy.dropped_penalty_cost;
+  DebugPrint << "dropped_penalty_cost" << max_cost << std::endl;
 
   for (std::size_t i = 0; i < this->sharing_model.nodes_size(); ++i) {
     const auto node = this->sharing_model.node(i);
@@ -291,21 +289,27 @@ auto SharingManager::StartCalculate() -> const Solution {
 
 
   // 設定 log
-  this->routing_search_parameter.set_log_search((this->sharing_model.strategy().time_limit > 0));
+  this->routing_search_parameter.set_log_search(true);
 
   //  設定初始解策略
   this->routing_search_parameter.set_first_solution_strategy(IntToFirstSolutionStrategyValue(this->sharing_model.parameter.strategy.first_solution_strategy));
 
-  //  設定啟發式演算法 與迭代時間上限
-  if (this->sharing_model.strategy().time_limit > 0) {
-    this->routing_search_parameter.set_local_search_metaheuristic(IntToMetaheuristicValue(this->sharing_model.parameter.strategy.first_solution_strategy));
-    this->routing_search_parameter.mutable_time_limit()->set_seconds(this->sharing_model.strategy().time_limit);
-  }
-
+  //  設定啟發式演算法
+  this->routing_search_parameter.set_local_search_metaheuristic(IntToMetaheuristicValue(this->sharing_model.parameter.strategy.first_solution_strategy));
 
   //  炫炮加速器
   this->routing_model->solver()->SetUseFastLocalSearch(true);
   this->routing_search_parameter.set_use_multi_armed_bandit_concatenate_operators(true);
+
+  //  設定迭代解個數上限
+  DebugPrint << "solution_limit " << this->sharing_model.strategy().solution_limit << std::endl;
+  if (this->sharing_model.strategy().solution_limit > 0)
+  this->routing_search_parameter.set_solution_limit(this->sharing_model.strategy().solution_limit);
+
+  //  設定迭代時間上限
+  DebugPrint << "time_limit " << this->sharing_model.strategy().time_limit << std::endl;
+  if (this->sharing_model.strategy().time_limit > 0)
+    this->routing_search_parameter.mutable_time_limit()->set_seconds(this->sharing_model.strategy().time_limit);
 
 
   //  開始計算
@@ -412,6 +416,7 @@ auto SharingManager::ConvertSolution(const operations_research::Assignment &assi
   solution.report.branches = solver->branches();
   solution.report.solutions = solver->solutions();
   solution.report.droppeds_num = solution.droppeds.size();
+  solution.report.dropped_penalty_cost = this->sharing_model.parameter.strategy.dropped_penalty_cost;
 
   if (solver->solutions() > 0) {
     solution.report.minimum_obj_cost = assignment.ObjectiveValue();

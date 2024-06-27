@@ -16,7 +16,7 @@ bash build.sh
 
 ### 3. Make mock data
 ```shell=
-docker run --rm -it -p 5000:5000 -v .:/mnt  alpine/dev/flask /bin/sh -c "cd /mnt/ && python3 make_test_data.py"
+docker run --rm -it -v .:/mnt  alpine/dev/flask /bin/sh -c "cd /mnt/ && python3 make_test_data.py"
 ```
 
 ### 3. Run Flask http Server and DB in Container

@@ -85,7 +85,7 @@ def authors_recommendations(input_data):
     if result_data.get("error"):
         return f"Error: {result_data['error']}"
     # 将 data 转换为 JSON 字符串
-    data_json = json.dumps(result_data['geo_json'])
+    data_json = json.dumps(result_data)
     
     # 对 JSON 字符串进行 URL 编码
     data_encoded = urllib.parse.quote(data_json)

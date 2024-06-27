@@ -16,7 +16,7 @@ def SaveJson(file_path,data):
 
 
 def vehicles():
-    vehicles_size = 8
+    vehicles_size = 6
     on_work_time_range = [240, 420]
     off_work_time_range = [1020, 1320]
     capacity_range = [3, 6]
@@ -38,7 +38,7 @@ def orders(locations):
     coor_b = [24.939932971435937, 121.63988127252611]
 
     start_time_range = [360, 1020]
-    duration_time_range = [40, 100]
+    duration_time_range = [59, 100]
     headcount_range = [1, 3]
 
 
@@ -76,9 +76,10 @@ def orders(locations):
 
 def strategy():
     return {
-        "first_solution_strategy": 8,
+        "first_solution_strategy": 7,
         "metaheuristic": 3,
-        "time_limit": 30
+        "time_limit": 30,
+        "solution_limit": -1
     }
 
 

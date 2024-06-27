@@ -27,12 +27,11 @@ RUN wget https://github.com/nlohmann/json/archive/refs/heads/develop.zip && \
     cp -pr /usr/local/json-develop/single_include/nlohmann /usr/local/include && \
     cd /usr/local && rm -r /usr/local/json-develop
 
-RUN wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz && \
-    tar zxvf ngrok-v3-stable-linux-amd64.tgz && rm ngrok-v3-stable-linux-amd64.tgz && \
-    mv /usr/local/ngrok /usr/local/bin
+# RUN wget https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz && \
+#     tar zxvf ngrok-v3-stable-linux-amd64.tgz && rm ngrok-v3-stable-linux-amd64.tgz && \
+#     mv /usr/local/ngrok /usr/local/bin
 
 RUN pip install geolib
 
-EXPOSE 5000
 
 CMD ["sh"]

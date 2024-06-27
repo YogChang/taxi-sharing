@@ -66,6 +66,7 @@ struct Report {
   std::int64_t totally_vehicles_num = -1;
   std::int64_t totally_orders_num = -1;
   std::int64_t used_vehicles_num = 0;
+  std::int64_t dropped_penalty_cost = -1;
   
   std::string version = "1.0.0";
   std::string routing_status = "UNKNOWN_STATUS";
@@ -79,11 +80,11 @@ struct Report {
       {"branches", branches},
       {"solutions", solutions},
       {"routing_status", routing_status},
-      {"droppeds_num", droppeds_num},
-      {"minimum_obj_cost", minimum_obj_cost},
-      {"totally_vehicles_num", totally_vehicles_num},
-      {"totally_orders_num", totally_orders_num},
-      {"used_vehicles_num", used_vehicles_num}
+      {"掉單數", int(droppeds_num / 2)},
+      {"總理程", int((minimum_obj_cost % dropped_penalty_cost)/1000)},
+      {"總體可用車輛數", totally_vehicles_num},
+      {"總體訂單數", totally_orders_num},
+      {"始用車輛數", used_vehicles_num}
     };
 
     return ret;
