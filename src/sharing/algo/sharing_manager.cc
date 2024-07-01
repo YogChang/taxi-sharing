@@ -10,7 +10,7 @@
 namespace airouting {
 namespace airsharing {
 
-auto Dispatch(const std::string &str) -> const std::string {
+auto Dispatch_to_json(const std::string &str) -> json {
   airouting::airsharing::DebugPrint << "start Dispatch" << std::endl;
   auto ret = json();
 
@@ -42,7 +42,12 @@ auto Dispatch(const std::string &str) -> const std::string {
   };
 
 
-  return ret.dump();
+  return ret;
+}
+
+auto Dispatch(const std::string &str) -> const std::string {
+
+  return Dispatch_to_json(str).dump();
 }
 
 

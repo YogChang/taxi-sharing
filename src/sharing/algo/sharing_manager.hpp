@@ -20,6 +20,7 @@ namespace airouting {
 namespace airsharing {
 using namespace operations_research;
 
+auto Dispatch_to_json(const std::string &str) -> json;
 auto Dispatch(const std::string &str) -> const std::string;
 
 class SharingManager {
