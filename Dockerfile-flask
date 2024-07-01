@@ -1,5 +1,15 @@
 # Use the official Python image from the Docker Hub
-FROM alpine/dev/flask
+FROM alpine/dev/flask AS builder
+
+RUN mkdir /usr/local/tmp && \
+    cp -pr /usr/lib/libstdc++.so* /usr/local/tmp && \
+    cp -pr /usr/lib/libgcc* /usr/local/tmp
+
+FROM python:3.9-alpine
+
+# Define correct paths for libstdc++ and libgcc
+COPY --from=builder /usr/local/tmp/ /usr/lib/
+COPY --from=builder /usr/local/lib/ /usr/local/lib/
 
 # Install necessary system packages and dependencies
 RUN apk update && apk add --no-cache \
